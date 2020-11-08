@@ -1,6 +1,12 @@
 3 Line Search Methods
 *************************************
 
+.. toctree::
+   :maxdepth: 2
+   
+   chapter3-1
+   chapter3-2
+
 Each iteration of a line search method computes a search direction :math:`p_k` and then decides how far to move along that direction. The iteration is given by
 
 .. math::
@@ -21,13 +27,4 @@ where :math:`\mathbf{B}_k` is a symmetric and nonsingular matrix. In the steepes
 
   p_k^\top \nabla f_k = - \nabla f_k^\top \mathbf{B}_k^{-1} \nabla f_k < 0
 
-and therefore :math:`p_k` is a descent direction.
-
-Contents
-=====================================
-
-.. toctree::
-   :maxdepth: 2
-   
-   chapter3-1
-   chapter3-2
+and therefore :math:`p_k` is a descent direction. In this chapter, we discuss how to choose :math:`\alpha_k` and :math:`p_k` to promote convergence from remote starting points. We also study the rate of convergence of steepest descent, quasi-Newton, and Newton methods. We also discuss modifications to Newton methods in Section 3.4.
