@@ -44,3 +44,14 @@ The sufficient decrease and curvature conditions are known collectively as the *
 
   f(x_k + \alpha_k p_k) & \leq f(x_k) + c_1 \alpha_k \nabla f_k^\top p_k \\
   \nabla f(x_k + \alpha_k p_k)^\top p_k & \geq c_2 \nabla f_k^\top p_k
+
+with :math:`0 < c_1 < c_2 < 1`. We can modify the curvature condition to force :math:`\alpha_k` to lie in at least a broad neighborhood of a local minimizer or stationary point of :math:`\phi`. The *strong Wolfe conditions` require :math:`\alpha_k` to satisfy
+
+.. math::
+
+  f(x_k + \alpha_k p_k) & \leq f(x_k) + c_1 \alpha_k \nabla f_k^\top p_k \\
+  \lvert \nabla f(x_k + \alpha_k p_k)^\top p_k \rvert & \leq \lvert c_2 \nabla f_k^\top p_k \rvert
+
+with :math:`0 < c_1 < c_2 < 1`.
+
+**Lemma 3.1:** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is continuously differentiable. Let :math:`p_k` be a descent direction at :math:`x_k`, and assume that :math:`f` is bounded below along the ray :math:`\{x_k + \alpha p_k \mid \alpha > 0\}`. Then if :math:`0 < c_1 < c_2 < 1`, there exist intervals of step lengths satisfying the Wolfe conditions and the strong Wolfe conditions.
