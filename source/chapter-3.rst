@@ -6,6 +6,8 @@
    
    chapter3-1
    chapter3-2
+   chapter3-3
+   chapter3-4
 
 Each iteration of a line search method computes a search direction :math:`p_k` and then decides how far to move along that direction. The iteration is given by
 
