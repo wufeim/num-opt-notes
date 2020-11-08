@@ -23,6 +23,9 @@ where :math:`\mathbf{B}_k` is a symmetric and nonsingular matrix. In the steepes
 
 and therefore :math:`p_k` is a descent direction.
 
+Contents
+=====================================
+
 .. toctree::
    :maxdepth: 2
    

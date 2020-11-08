@@ -15,6 +15,6 @@ Contents
 =====================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    chapter-3
