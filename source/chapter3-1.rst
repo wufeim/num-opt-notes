@@ -55,3 +55,35 @@ with :math:`0 < c_1 < c_2 < 1`. We can modify the curvature condition to force :
 with :math:`0 < c_1 < c_2 < 1`.
 
 **Lemma 3.1:** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is continuously differentiable. Let :math:`p_k` be a descent direction at :math:`x_k`, and assume that :math:`f` is bounded below along the ray :math:`\{x_k + \alpha p_k \mid \alpha > 0\}`. Then if :math:`0 < c_1 < c_2 < 1`, there exist intervals of step lengths satisfying the Wolfe conditions and the strong Wolfe conditions.
+
+The Wolfe conditions are scale-invariant. They can be used in most line search methods, and are particularly important in the implementation of quasi-Newton methods.
+
+The Goldstein Conditions
+-------------------------------------
+
+The Goldstein conditions can be stated as a pair of inequalities
+
+.. math::
+
+  f(x_k) + (1 - c) \alpha_k \nabla f_k^\top p_k \leq f(x_k + \alpha_k p_k) \leq f(x_k) + c \alpha_k \nabla f_k^\top p_k
+
+with :math:`0 < c < 1/2`. The second inequality is the sufficient decrease condition, whereas the first inequality is introduced to control the the step length.
+
+A disadvantage of the Goldstein condition is that the first inequality may exclude all minimizers of :math:`\phi`. The Goldstein conditions are often used in Newton-type methods but are not well-suited for quasi-Newton methods that maintain a positive definite Hessian approximation.
+
+Sufficient Decrease and Backtracking
+-------------------------------------
+
+If we choose candidate step lengths appropriately by using the *backtracking* approach, we can dispense the curvature condition. In its most basic form, backtracking proceeds as follows.
+
+**Algorithm 3.1** (Backtracking Line Search).
+
+.. code-block::
+
+  Choose :math:`\bar{\alpha} > 0`
+
+  Terminate with :math:`\alpha_k = \alpha`.
+
+The initial step length :math:`\bar{\alpha}` is chosen to be 1 in Newton and quasi-Newton methods. In practice, the contraction factor :math:`\rho` is often allowed to vary at each iteration. For example, it can be chosen by safeguard interpolation. We need ensure only at each iteration we have :math:`\rho \in [\rho_{lo}, \rho_{hi}]`, for some fixed constants :math:`0 < \rho_{lo} < \rho_{hi} < 1`.
+
+This simple and popular strategy for terminating a line search is well-suited for Newton methods but is less appropriate for quasi-Newton and conjugate gradient methods.
