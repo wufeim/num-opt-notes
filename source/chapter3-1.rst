@@ -37,3 +37,10 @@ Note that the Armijo condition is satisfied on all sufficiently small values of 
   \nabla f(x_k + \alpha_k p_k)^\top p_k \geq c_2 \nabla f_k^\top p_k
 
 for some constant :math:`c_2 \in (c_1, 1)`. The left-hand-side is simply the derivative :math:`\phi'(\alpha_k)`, so the curvature ensures that the slope of :math:`\phi` at :math:`\alpha_k` is larger than :math:`c_2` times the initial slope :math:`\phi'(0)`. Typical values of :math:`c_2` are 0.9 for Newton or quasi-Newton method, and 0.1 for nonlinear conjugate gradient method.
+
+The sufficient decrease and curvature conditions are known collectively as the *Wolfe conditions*. We restate here for future reference
+
+.. math::
+
+  f(x_k + \alpha_k p_k) & \leq f(x_k) + c_1 \alpha_k \nabla f_k^\top p_k \\
+  \nabla f(x_k + \alpha_k p_k)^\top p_k & \geq c_2 \nabla f_k^\top p_k
