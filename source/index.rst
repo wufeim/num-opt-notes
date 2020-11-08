@@ -1,11 +1,6 @@
 Notes for Numerical Optimization (2nd)
 *************************************
 
-.. toctree::
-   :maxdepth: 2
-
-   chapter-3
-
 About
 =====================================
 
@@ -15,3 +10,11 @@ Contributors
 =====================================
 
 * Mofii
+
+Contents
+=====================================
+
+.. toctree::
+   :maxdepth: 1
+
+   chapter-3
