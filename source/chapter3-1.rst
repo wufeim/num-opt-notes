@@ -54,7 +54,7 @@ with :math:`0 < c_1 < c_2 < 1`. We can modify the curvature condition to force :
 
 with :math:`0 < c_1 < c_2 < 1`.
 
-**Lemma 3.1:** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is continuously differentiable. Let :math:`p_k` be a descent direction at :math:`x_k`, and assume that :math:`f` is bounded below along the ray :math:`\{x_k + \alpha p_k \mid \alpha > 0\}`. Then if :math:`0 < c_1 < c_2 < 1`, there exist intervals of step lengths satisfying the Wolfe conditions and the strong Wolfe conditions.
+**Lemma 3.1.** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is continuously differentiable. Let :math:`p_k` be a descent direction at :math:`x_k`, and assume that :math:`f` is bounded below along the ray :math:`\{x_k + \alpha p_k \mid \alpha > 0\}`. Then if :math:`0 < c_1 < c_2 < 1`, there exist intervals of step lengths satisfying the Wolfe conditions and the strong Wolfe conditions.
 
 The Wolfe conditions are scale-invariant. They can be used in most line search methods, and are particularly important in the implementation of quasi-Newton methods.
 
