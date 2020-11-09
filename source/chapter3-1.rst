@@ -76,13 +76,12 @@ Sufficient Decrease and Backtracking
 
 If we choose candidate step lengths appropriately by using the *backtracking* approach, we can dispense the curvature condition. In its most basic form, backtracking proceeds as follows.
 
-**Algorithm 3.1** (Backtracking Line Search).
-
-.. code-block::
-
-  Choose :math:`\bar{\alpha} > 0`
-
-  Terminate with :math:`\alpha_k = \alpha`.
+| **Algorithm 3.1** (Backtracking Line Search).
+|   Choose :math:`\bar{\alpha} > 0`, :math:`\rho \in (0, 1)`, :math:`c \in (0, 1)`; Set :math:`\alpha \leftarrow \bar{\alpha}`;
+|   **repeat until** :math:`f(x_k + \alpha p_k) \leq f(x_k) + c\alpha \nabla f_k^\top p_k`
+|     :math:`\alpha \leftarrow \rho\alpha`;
+|   **end repead**
+|   Terminate with :math:`\alpha_k = \alpha`.
 
 The initial step length :math:`\bar{\alpha}` is chosen to be 1 in Newton and quasi-Newton methods. In practice, the contraction factor :math:`\rho` is often allowed to vary at each iteration. For example, it can be chosen by safeguard interpolation. We need ensure only at each iteration we have :math:`\rho \in [\rho_{lo}, \rho_{hi}]`, for some fixed constants :math:`0 < \rho_{lo} < \rho_{hi} < 1`.
 
