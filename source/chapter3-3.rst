@@ -33,3 +33,31 @@ which yields a closed-form expression for :math:`x_{k+1}` in terms of :math:`x_k
 
 .. image:: images/fig3-2.png
   :width: 320px
+
+To quantify the rate of convergence we introduce the weighted norm :math:`\lVert x \rVert_Q^2 = x^\top Qx`. By using the relation :math:`Qx^* = b`, we can show that
+
+.. math::
+
+  \frac{1}{2} \lVert x - x^* \rVert_Q^2 & = \frac{1}{2} (x - x^*)^\top Q (x - x^*) \\
+  & = \frac{1}{2} (x^\top Qx - x^\top Qx^* - x^{*\top}Qx + x^{*\top}Qx^*) \\
+  & = \frac{1}{2} x^\top Qx - b^\top x + \frac{1}{2} b^\top x^{*\top} \\
+  & = f(x) - f(x^*)
+  f(x^*) & = \frac{1}{2} x^{*\top} Qx^* - b^\top x^* \\
+  & = \frac{1}{2} x^{*\top} b - b^\top x^* \\
+  & = - \frac{1}{2} b^\top x^*
+
+Noting that :math:`\nabla f_k = Q(x_k - x^*)`, we have
+
+.. math::
+
+  \lVert x_{k+1} - x^* \rVert_Q^2 = \left\{ 1 - \frac{(\nabla f_k^\top \nabla f_k)^2}{(\nabla f_k^\top Q \nabla f_k)(\nabla f_k^\top Q^{-1} \nabla f_k)} \right\} \lVert x_k - x^* \rVert_Q^2
+
+(see Exercise 3.7). Since the term inside the brackets is hard to interpret, it is more useful to bound it in terms of condition number of the problem.
+
+**Theorem 3.3.** When the steepest descent method with exact line searches is applied to the strongly convex quadratic function, the error norm satisfies
+
+.. math::
+
+  \lVert x_{k+1} - x^* \rVert_Q^2 \leq \left( \frac{\lambda_n - \lambda_1}{\lambda_n + \lambda_1} \right)^2 \lVert x_k - x^* \rVert_Q^2
+
+where :math:`0 < \lambda_1 \leq \dots \leq \lambda_n` are the eigenvalues of :math:`Q`.
