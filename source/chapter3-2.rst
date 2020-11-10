@@ -35,7 +35,7 @@ The Zoutendijk condition implies that
 
   \cos^2 \theta_k \lVert \nabla f_k \rVert^2 \to 0
 
-.. warning:
+.. warning::
 
   How to show this?
 
