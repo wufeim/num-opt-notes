@@ -114,7 +114,6 @@ where the symmetric and positive definite matrix :math:`B_k` is updated at every
 
 .. math::
   :label: eq3.36
-
   \lim_{k \to \infty} \frac{\lVert \nabla f_k + \nabla^2 f_k p_k}{\lVert p_k \rVert} = 0
 
 then
@@ -122,7 +121,7 @@ then
 1. the step length :math:`\alpha_k` is admissible for all :math:`k` greater than a certain index :math:`k_0`
 2. if :math:`\alpha_k = 1` for all :math:`k > k_0`, :math:`\{x_k\}` converges to :math:`x^*` superlinearly
 
-If :math:`p_k` is a quasi-Newton search direction, then (:eq:`eq3.36`) is equivalent to
+If :math:`p_k` is a quasi-Newton search direction, then :eq:`eq3.36` is equivalent to
 
 .. math::
 
@@ -130,4 +129,4 @@ If :math:`p_k` is a quasi-Newton search direction, then (:eq:`eq3.36`) is equiva
 
 Hence we have the result that a superlinear convergence rate can be attained even if the sequence of quasi-Newton matrices :math:`B_k` does not converge to :math:`\nabla^2 f(x^*)`. Importantly, this condition is both necessary and sufficient for the superlinear convergence of quasi-Newton methods.
 
-**Theorem 3.7.** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is twice continuously differentiable. Consider the iteration :math:`x_{k+1} = x_k + p_k` and that :math:`p_k` is given by :math:`p_k = - B_k^{-1} \nabla f_k`. Let us assume that :math:`\{x_k\}` converges to a point :math:`x^*` such that :math:`\nabla f(x^*) = 0` and :math:`\nabla^2 f(x^*)` is positive definite. Then :math:`\{x_k\}` converges superlinearly if and only if (:eq:`eq3.36`) holds.
+**Theorem 3.7.** Suppose that :math:`f: \mathbb{R}^n \to \mathbb{R}` is twice continuously differentiable. Consider the iteration :math:`x_{k+1} = x_k + p_k` and that :math:`p_k` is given by :math:`p_k = - B_k^{-1} \nabla f_k`. Let us assume that :math:`\{x_k\}` converges to a point :math:`x^*` such that :math:`\nabla f(x^*) = 0` and :math:`\nabla^2 f(x^*)` is positive definite. Then :math:`\{x_k\}` converges superlinearly if and only if :eq:`eq3.36` holds.
