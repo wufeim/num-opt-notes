@@ -18,3 +18,4 @@ Contents
    :maxdepth: 2
 
    chapter-3
+   chapter-4
