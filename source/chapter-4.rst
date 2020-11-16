@@ -39,9 +39,6 @@ To obtain each step, we seek a solution of the subproblem
 
 where :math:`\delta_k > 0` is the trust-region radius. In any case, as described below, we need only an *approximate* solution to obtain convergence and good practical behavior.
 
-Outline of the Trust-Region Approach
--------------------------------------
-
 We choose the trust-region radius :math:`m_k` based on the agreement between the model function :math:`m_k` and the object function :math:`f` at previous iterations. Given a step :math:`p_k` we define the ratio
 
 .. math::
@@ -68,4 +65,32 @@ the numerator is called the *actual reduction* and the denominator is the *predi
 |       :math:`x_{k+1} = x_k`;
 | **end for**.
 
-Here :math:`\hat{\delta}` is an overall bound on the step lengths.
+Here :math:`\hat{\delta}` is an overall bound on the step lengths. We restate the trust-region subporblem as
+
+.. math::
+
+  \min_{p \in \mathbb{R}^n} m(p) \stackrel{\text{def}}{=} = f + g^\top p + \frac{1}{2} p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta
+
+**Theorem 4.1.** The vector :math:`p^*` is a global solution of the trust-region problem
+
+.. math::
+
+  \min_{p \in \mathbb{R}^n} m(p) = f + g^\top p + \frac{1}{2}p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta
+
+if and only if :math:`p^*` is feasible and there is a scalar :math:`\lambda \geq 0` such that the following conditions are satisfied:
+
+.. math::
+
+  (B + \lambda I)p^* & = -g \\
+  \lambda (\delta - \lVert p^* \rVert) & = 0 \\
+  (B + \lambda I) & \;\;\; \text{is positive semidefinite}
+
+The figure below shows the properties of this theorem with different :math:`\delta`. Note that
+
+.. math::
+
+  \lambda p^* = - Bp^* - g = - \nabla m (p^*)
+
+Thus, when :math:`\lambda > 0`, the solution :math:`p^*` is collinear with the negative gradient of :math:`m` and normal to its contours.
+
+In Section 4.1, we describe two strategies for finding *approximate* solutions of the subproblem, the *dogleg method* and the *two-dimensional subspace minimization*, which achieve at least as much reduction in :math:`m_k` as the reduction achieved by the *Cauchy point*.
