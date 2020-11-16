@@ -69,7 +69,7 @@ Here :math:`\hat{\delta}` is an overall bound on the step lengths. We restate th
 
 .. math::
 
-  \min_{p \in \mathbb{R}^n} m(p) \stackrel{\text{def}}{=} = f + g^\top p + \frac{1}{2} p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta
+  \min_{p \in \mathbb{R}^n} m(p) \stackrel{\text{def}}{=} f + g^\top p + \frac{1}{2} p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta
 
 **Theorem 4.1.** The vector :math:`p^*` is a global solution of the trust-region problem
 
@@ -92,5 +92,3 @@ The figure below shows the properties of this theorem with different :math:`\del
   \lambda p^* = - Bp^* - g = - \nabla m (p^*)
 
 Thus, when :math:`\lambda > 0`, the solution :math:`p^*` is collinear with the negative gradient of :math:`m` and normal to its contours.
-
-In Section 4.1, we describe two strategies for finding *approximate* solutions of the subproblem, the *dogleg method* and the *two-dimensional subspace minimization*, which achieve at least as much reduction in :math:`m_k` as the reduction achieved by the *Cauchy point*.
