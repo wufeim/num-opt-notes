@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.1 Algorithms Based on the Cauchy Point &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="4 Trust-Region Methods" href="chapter-4.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter-4.html" title="4 Trust-Region Methods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-4.html" accesskey="U">4 Trust-Region Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4.1 Algorithms Based on the Cauchy Point</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="algorithms-based-on-the-cauchy-point">
+<h1>4.1 Algorithms Based on the Cauchy Point<a class="headerlink" href="#algorithms-based-on-the-cauchy-point" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-cauchy-point">
+<h2>The Cauchy Point<a class="headerlink" href="#the-cauchy-point" title="Permalink to this headline">¶</a></h2>
+<p>It is enough for purposes of global convergence to find an approximate solution <span class="math notranslate nohighlight">\(p_k\)</span> that lies within the trust region and gives a <em>sufficient reduction</em> in the model. The sufficient reduction can be quantified in terms of the Cauchy point, denoted by <span class="math notranslate nohighlight">\(p_k^c\)</span>.</p>
+<div class="line-block">
+<div class="line"><strong>Algorithm 4.2</strong> (Cauchy Point Calculation).</div>
+<div class="line-block">
+<div class="line">Find the vector <span class="math notranslate nohighlight">\(p_k^s\)</span> that solves a linear version of the trust-region subproblem, given by</div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(p_k^s = \text{argmin}_{p \in \mathbb{R}^n} f_k + g_k^\top p \;\;\; \text{s.t. } \lVert p \rVert \leq \delta_k\)</span></div>
+</div>
+<div class="line">Calculate the scalar <span class="math notranslate nohighlight">\(\tau_k &gt; 0\)</span> that minimizes <span class="math notranslate nohighlight">\(m_k(\tau p_k^s)\)</span> subject to satisfying the trust-region bound, that is</div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(\tau_k = \text{argmin}_{\tau \geq 0} m_k(\tau p_k^s) \;\;\; \text{s.t. } \lVert \tau p_k^s \rVert \leq \delta_k\)</span></div>
+</div>
+<div class="line">Set <span class="math notranslate nohighlight">\(p_k^c = \tau_kp_k^s\)</span>.</div>
+</div>
+</div>
+<p>The closed-form solution to the first subproblem is simply</p>
+<div class="math notranslate nohighlight">
+\[p_k^s = - \frac{\delta_k}{\lVert g_k \rVert} g_k\]</div>
+<p>By considering <span class="math notranslate nohighlight">\(g_k^\top B_kg_k \leq 0\)</span> and <span class="math notranslate nohighlight">\(g_k^\top B_kg_k &gt; 0\)</span> separately, we have</p>
+<div class="math notranslate nohighlight">
+\[p_k^c = -\tau_k \frac{\delta_k}{\lVert g_k \rVert} g_k\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\tau_k = \begin{cases}
+  1 &amp; \text{if } g_k^\top B_kg_k \leq 0 \\
+  \min(\lVert g_k \rVert^3/(\delta_k g_k^\top B_kg_k), 1) &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>The Cauchy step <span class="math notranslate nohighlight">\(p_k^c\)</span> is inexpensive to calculate and is of crucial importance in deciding if an approximate solution of the trust-region subproblem is acceptable. Specifically, a trust-region method will be globally convergent if its steps <span class="math notranslate nohighlight">\(p_k\)</span> give a reduction in the <span class="math notranslate nohighlight">\(m_k\)</span> that is at least some fixed positive multiple of the decrease attained by the Cauchy step.</p>
+</div>
+<div class="section" id="improving-on-the-cauchy-point">
+<h2>Improving on the Cauchy Point<a class="headerlink" href="#improving-on-the-cauchy-point" title="Permalink to this headline">¶</a></h2>
+<p>The Cauchy point is simply the steepest descent method with a particular choice of step lengths. Steepest descent methods perform poorly even if an <em>optimal</em> step length is used at each iteration. Now we focus on the trust-region subproblem</p>
+<div class="math notranslate nohighlight">
+\[\min_{p \in \mathbb{R}^n} m(p) = f + g^\top p + \frac{1}{2}p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta\]</div>
+<p>and we denote the solution by <span class="math notranslate nohighlight">\(p^*(\delta)\)</span>.</p>
+</div>
+<div class="section" id="the-dogleg-method">
+<h2>The Dogleg method<a class="headerlink" href="#the-dogleg-method" title="Permalink to this headline">¶</a></h2>
+<p>The <em>dogleg method</em> an be used when <span class="math notranslate nohighlight">\(B\)</span> is positive definite.</p>
+</div>
+<div class="section" id="two-dimensional-subspace-minimization">
+<h2>Two-Dimensional Subspace Minimization<a class="headerlink" href="#two-dimensional-subspace-minimization" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.1 Algorithms Based on the Cauchy Point</a><ul>
+<li><a class="reference internal" href="#the-cauchy-point">The Cauchy Point</a></li>
+<li><a class="reference internal" href="#improving-on-the-cauchy-point">Improving on the Cauchy Point</a></li>
+<li><a class="reference internal" href="#the-dogleg-method">The Dogleg method</a></li>
+<li><a class="reference internal" href="#two-dimensional-subspace-minimization">Two-Dimensional Subspace Minimization</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter-4.html"
+                        title="previous chapter">4 Trust-Region Methods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter4-1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter-4.html" title="4 Trust-Region Methods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-4.html" >4 Trust-Region Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4.1 Algorithms Based on the Cauchy Point</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

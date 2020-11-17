@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.1 Introduction &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3.2 Convergence of Line Search Methods" href="chapter3-2.html" />
+    <link rel="prev" title="3 Line Search Methods" href="chapter-3.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter3-2.html" title="3.2 Convergence of Line Search Methods"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter-3.html" title="3 Line Search Methods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" accesskey="U">3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.1 Introduction</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>3.1 Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>In computing the step lenght <span class="math notranslate nohighlight">\(\alpha_k\)</span>, we face a tradeoff. We would like to choose <span class="math notranslate nohighlight">\(\alpha_k\)</span> to give a substantial reduction of <span class="math notranslate nohighlight">\(f\)</span>, but at the same time we do not want to spend too much time making the choice. The ideal choice would be the global optimizer of the univariate function <span class="math notranslate nohighlight">\(\phi(\cdot)\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[\phi(\alpha) = f(x_k + \alpha p_k), \;\;\; \alpha &gt; 0\]</div>
+<p>but in general, it is too expensive to identify this value. More practical strategies perform an <em>inexact</em> line search to identify a step length that achieves adequate reductions in <span class="math notranslate nohighlight">\(f\)</span> at minimal cost.</p>
+<p>Typical line search algorithms try out a sequence of candidate values for <span class="math notranslate nohighlight">\(\alpha\)</span>, stopping to accept one of these values when certain conditions are satisfied. The line search in done in two stages: A bracketing phase finds an interval containing desirable step lengths, and a bisection or interpolation phase computes a good step length within this interval.</p>
+<p>We now discuss various termination conditions for line search algorithms and their effectiveness.</p>
+<p>A simple condition we could impose on <span class="math notranslate nohighlight">\(\alpha_k\)</span> is to require a reduction in <span class="math notranslate nohighlight">\(f\)</span>, that is, <span class="math notranslate nohighlight">\(f(x_k + \alpha_k p_k) &lt; f(x_k)\)</span>. However, the insufficient reduction in <span class="math notranslate nohighlight">\(f\)</span> at each step may cause it to fail to converge to the minimizer. Hence we need to enforce a <em>sufficient decrease</em> condition.</p>
+<div class="section" id="the-wolfe-conditions">
+<h2>The Wolfe Conditions<a class="headerlink" href="#the-wolfe-conditions" title="Permalink to this headline">¶</a></h2>
+<p>A popular inexact line search condition stipulates that <span class="math notranslate nohighlight">\(\alpha_k\)</span> should first of all give <em>sufficient decrease</em> in <span class="math notranslate nohighlight">\(f\)</span>, as measured by the inequality:</p>
+<div class="math notranslate nohighlight">
+\[f(x_k + \alpha p_k) \leq f(x_k) + c_k \alpha \nabla f_k^\top p_k\]</div>
+<p>for some constant <span class="math notranslate nohighlight">\(c_1 \in (0, 1)\)</span>. This is sometimes called the <em>Armijo condition</em>. The intervals on which this condition is satisfied are shown in the figure below. In practice, <span class="math notranslate nohighlight">\(c_1\)</span> is chosen to be quite small, say <span class="math notranslate nohighlight">\(c_1 = 10^{-4}\)</span>.</p>
+<a class="reference internal image-reference" href="_images/fig3-1.png"><img alt="_images/fig3-1.png" src="_images/fig3-1.png" style="width: 320pt;" /></a>
+<p>Note that the Armijo condition is satisfied on all sufficiently small values of <span class="math notranslate nohighlight">\(\alpha\)</span>. To rule out unacceptably short steps we introduce a second requirement, called the <em>curvature condition</em></p>
+<div class="math notranslate nohighlight">
+\[\nabla f(x_k + \alpha_k p_k)^\top p_k \geq c_2 \nabla f_k^\top p_k\]</div>
+<p>for some constant <span class="math notranslate nohighlight">\(c_2 \in (c_1, 1)\)</span>. The left-hand-side is simply the derivative <span class="math notranslate nohighlight">\(\phi'(\alpha_k)\)</span>, so the curvature ensures that the slope of <span class="math notranslate nohighlight">\(\phi\)</span> at <span class="math notranslate nohighlight">\(\alpha_k\)</span> is larger than <span class="math notranslate nohighlight">\(c_2\)</span> times the initial slope <span class="math notranslate nohighlight">\(\phi'(0)\)</span>. Typical values of <span class="math notranslate nohighlight">\(c_2\)</span> are 0.9 for Newton or quasi-Newton method, and 0.1 for nonlinear conjugate gradient method.</p>
+<p>The sufficient decrease and curvature conditions are known collectively as the <em>Wolfe conditions</em>. We restate here for future reference</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(x_k + \alpha_k p_k) &amp; \leq f(x_k) + c_1 \alpha_k \nabla f_k^\top p_k \\
+\nabla f(x_k + \alpha_k p_k)^\top p_k &amp; \geq c_2 \nabla f_k^\top p_k\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(0 &lt; c_1 &lt; c_2 &lt; 1\)</span>. We can modify the curvature condition to force <span class="math notranslate nohighlight">\(\alpha_k\)</span> to lie in at least a broad neighborhood of a local minimizer or stationary point of <span class="math notranslate nohighlight">\(\phi\)</span>. The <a href="#id1"><span class="problematic" id="id2">*</span></a>strong Wolfe conditions` require <span class="math notranslate nohighlight">\(\alpha_k\)</span> to satisfy</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(x_k + \alpha_k p_k) &amp; \leq f(x_k) + c_1 \alpha_k \nabla f_k^\top p_k \\
+\lvert \nabla f(x_k + \alpha_k p_k)^\top p_k \rvert &amp; \leq \lvert c_2 \nabla f_k^\top p_k \rvert\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(0 &lt; c_1 &lt; c_2 &lt; 1\)</span>.</p>
+<p><strong>Lemma 3.1.</strong> Suppose that <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}\)</span> is continuously differentiable. Let <span class="math notranslate nohighlight">\(p_k\)</span> be a descent direction at <span class="math notranslate nohighlight">\(x_k\)</span>, and assume that <span class="math notranslate nohighlight">\(f\)</span> is bounded below along the ray <span class="math notranslate nohighlight">\(\{x_k + \alpha p_k \mid \alpha &gt; 0\}\)</span>. Then if <span class="math notranslate nohighlight">\(0 &lt; c_1 &lt; c_2 &lt; 1\)</span>, there exist intervals of step lengths satisfying the Wolfe conditions and the strong Wolfe conditions.</p>
+<p>The Wolfe conditions are scale-invariant. They can be used in most line search methods, and are particularly important in the implementation of quasi-Newton methods.</p>
+</div>
+<div class="section" id="the-goldstein-conditions">
+<h2>The Goldstein Conditions<a class="headerlink" href="#the-goldstein-conditions" title="Permalink to this headline">¶</a></h2>
+<p>The Goldstein conditions can be stated as a pair of inequalities</p>
+<div class="math notranslate nohighlight">
+\[f(x_k) + (1 - c) \alpha_k \nabla f_k^\top p_k \leq f(x_k + \alpha_k p_k) \leq f(x_k) + c \alpha_k \nabla f_k^\top p_k\]</div>
+<p>with <span class="math notranslate nohighlight">\(0 &lt; c &lt; 1/2\)</span>. The second inequality is the sufficient decrease condition, whereas the first inequality is introduced to control the the step length.</p>
+<p>A disadvantage of the Goldstein condition is that the first inequality may exclude all minimizers of <span class="math notranslate nohighlight">\(\phi\)</span>. The Goldstein conditions are often used in Newton-type methods but are not well-suited for quasi-Newton methods that maintain a positive definite Hessian approximation.</p>
+</div>
+<div class="section" id="sufficient-decrease-and-backtracking">
+<h2>Sufficient Decrease and Backtracking<a class="headerlink" href="#sufficient-decrease-and-backtracking" title="Permalink to this headline">¶</a></h2>
+<p>If we choose candidate step lengths appropriately by using the <em>backtracking</em> approach, we can dispense the curvature condition. In its most basic form, backtracking proceeds as follows.</p>
+<div class="line-block">
+<div class="line"><strong>Algorithm 3.1</strong> (Backtracking Line Search).</div>
+<div class="line-block">
+<div class="line">Choose <span class="math notranslate nohighlight">\(\bar{\alpha} &gt; 0\)</span>, <span class="math notranslate nohighlight">\(\rho \in (0, 1)\)</span>, <span class="math notranslate nohighlight">\(c \in (0, 1)\)</span>; Set <span class="math notranslate nohighlight">\(\alpha \leftarrow \bar{\alpha}\)</span>;</div>
+<div class="line"><strong>repeat until</strong> <span class="math notranslate nohighlight">\(f(x_k + \alpha p_k) \leq f(x_k) + c\alpha \nabla f_k^\top p_k\)</span></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(\alpha \leftarrow \rho\alpha\)</span>;</div>
+</div>
+<div class="line"><strong>end repead</strong></div>
+<div class="line">Terminate with <span class="math notranslate nohighlight">\(\alpha_k = \alpha\)</span>.</div>
+</div>
+</div>
+<p>The initial step length <span class="math notranslate nohighlight">\(\bar{\alpha}\)</span> is chosen to be 1 in Newton and quasi-Newton methods. In practice, the contraction factor <span class="math notranslate nohighlight">\(\rho\)</span> is often allowed to vary at each iteration. For example, it can be chosen by safeguard interpolation. We need ensure only at each iteration we have <span class="math notranslate nohighlight">\(\rho \in [\rho_{lo}, \rho_{hi}]\)</span>, for some fixed constants <span class="math notranslate nohighlight">\(0 &lt; \rho_{lo} &lt; \rho_{hi} &lt; 1\)</span>.</p>
+<p>This simple and popular strategy for terminating a line search is well-suited for Newton methods but is less appropriate for quasi-Newton and conjugate gradient methods.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.1 Introduction</a><ul>
+<li><a class="reference internal" href="#the-wolfe-conditions">The Wolfe Conditions</a></li>
+<li><a class="reference internal" href="#the-goldstein-conditions">The Goldstein Conditions</a></li>
+<li><a class="reference internal" href="#sufficient-decrease-and-backtracking">Sufficient Decrease and Backtracking</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter-3.html"
+                        title="previous chapter">3 Line Search Methods</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter3-2.html"
+                        title="next chapter">3.2 Convergence of Line Search Methods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter3-1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter3-2.html" title="3.2 Convergence of Line Search Methods"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter-3.html" title="3 Line Search Methods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" >3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.1 Introduction</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

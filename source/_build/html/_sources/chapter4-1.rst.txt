@@ -1,0 +1,56 @@
+4.1 Algorithms Based on the Cauchy Point
+=====================================
+
+The Cauchy Point
+-------------------------------------
+
+It is enough for purposes of global convergence to find an approximate solution :math:`p_k` that lies within the trust region and gives a *sufficient reduction* in the model. The sufficient reduction can be quantified in terms of the Cauchy point, denoted by :math:`p_k^c`.
+
+| **Algorithm 4.2** (Cauchy Point Calculation).
+|   Find the vector :math:`p_k^s` that solves a linear version of the trust-region subproblem, given by
+|     :math:`p_k^s = \text{argmin}_{p \in \mathbb{R}^n} f_k + g_k^\top p \;\;\; \text{s.t. } \lVert p \rVert \leq \delta_k`
+|   Calculate the scalar :math:`\tau_k > 0` that minimizes :math:`m_k(\tau p_k^s)` subject to satisfying the trust-region bound, that is
+|     :math:`\tau_k = \text{argmin}_{\tau \geq 0} m_k(\tau p_k^s) \;\;\; \text{s.t. } \lVert \tau p_k^s \rVert \leq \delta_k`
+|   Set :math:`p_k^c = \tau_kp_k^s`.
+
+The closed-form solution to the first subproblem is simply
+
+.. math::
+
+  p_k^s = - \frac{\delta_k}{\lVert g_k \rVert} g_k
+
+By considering :math:`g_k^\top B_kg_k \leq 0` and :math:`g_k^\top B_kg_k > 0` separately, we have
+
+.. math::
+
+  p_k^c = -\tau_k \frac{\delta_k}{\lVert g_k \rVert} g_k
+
+where
+
+.. math::
+
+  \tau_k = \begin{cases}
+    1 & \text{if } g_k^\top B_kg_k \leq 0 \\
+    \min(\lVert g_k \rVert^3/(\delta_k g_k^\top B_kg_k), 1) & \text{otherwise}
+  \end{cases}
+
+The Cauchy step :math:`p_k^c` is inexpensive to calculate and is of crucial importance in deciding if an approximate solution of the trust-region subproblem is acceptable. Specifically, a trust-region method will be globally convergent if its steps :math:`p_k` give a reduction in the :math:`m_k` that is at least some fixed positive multiple of the decrease attained by the Cauchy step.
+
+Improving on the Cauchy Point
+-------------------------------------
+
+The Cauchy point is simply the steepest descent method with a particular choice of step lengths. Steepest descent methods perform poorly even if an *optimal* step length is used at each iteration. Now we focus on the trust-region subproblem
+
+.. math::
+
+  \min_{p \in \mathbb{R}^n} m(p) = f + g^\top p + \frac{1}{2}p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta
+
+and we denote the solution by :math:`p^*(\delta)`.
+
+The Dogleg method
+-------------------------------------
+
+The *dogleg method* an be used when :math:`B` is positive definite.
+
+Two-Dimensional Subspace Minimization
+-------------------------------------

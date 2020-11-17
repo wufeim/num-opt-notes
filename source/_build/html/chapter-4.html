@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Trust-Region Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.1 Algorithms Based on the Cauchy Point" href="chapter4-1.html" />
+    <link rel="prev" title="3.5 Step-Length Selection Algorithms" href="chapter3-5.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter4-1.html" title="4.1 Algorithms Based on the Cauchy Point"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-5.html" title="3.5 Step-Length Selection Algorithms"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4 Trust-Region Methods</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="trust-region-methods">
+<h1>4 Trust-Region Methods<a class="headerlink" href="#trust-region-methods" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter4-1.html">4.1 Algorithms Based on the Cauchy Point</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter4-1.html#the-cauchy-point">The Cauchy Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter4-1.html#improving-on-the-cauchy-point">Improving on the Cauchy Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter4-1.html#the-dogleg-method">The Dogleg method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter4-1.html#two-dimensional-subspace-minimization">Two-Dimensional Subspace Minimization</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Trust-region methods define a region around the current iterate within which they <em>trust</em> the model to be an adquate representation of the objective function, and then choose the step to be the approximate minimizer of the model in this region.</p>
+<p>The figure below illustrates the trust-region approach on a function <span class="math notranslate nohighlight">\(f\)</span> of two variables in which the current <span class="math notranslate nohighlight">\(x_k\)</span> and the minimizer <span class="math notranslate nohighlight">\(x^*\)</span> lie at opposite ends of a curved valley.</p>
+<a class="reference internal image-reference" href="_images/fig4-1.png"><img alt="_images/fig4-1.png" src="_images/fig4-1.png" style="width: 320pt;" /></a>
+<p>In this chapter, we will assume that the model function <span class="math notranslate nohighlight">\(m_k\)</span> is quadratic. Moreover, <span class="math notranslate nohighlight">\(m_k\)</span> is based on the Taylor-series expansion of <span class="math notranslate nohighlight">\(f\)</span> around <span class="math notranslate nohighlight">\(x_k\)</span>, which is</p>
+<div class="math notranslate nohighlight">
+\[f(x_k + p) = f_k + g_k^\top p + \frac{1}{2}p^\top \nabla^2 f(x_k + tp)p\]</div>
+<p>where <span class="math notranslate nohighlight">\(g_k = \nabla f(x_k)\)</span> and <span class="math notranslate nohighlight">\(t \in (0, 1)\)</span>. By using an approximation <span class="math notranslate nohighlight">\(B_k\)</span> to the Hessian in the second order term, <span class="math notranslate nohighlight">\(m_k\)</span> is defined as</p>
+<div class="math notranslate nohighlight">
+\[m_k(p) = f_k + g_k^\top p + \frac{1}{2} p^\top B_k p\]</div>
+<p>where <span class="math notranslate nohighlight">\(B_k\)</span> is some symmetric matrix. We emphasize the generality of the trust-region approach by assuming little about <span class="math notranslate nohighlight">\(B_k\)</span> except symmetry and uniform boundedness.</p>
+<p>To obtain each step, we seek a solution of the subproblem</p>
+<div class="math notranslate nohighlight">
+\[\min_{p \in \mathbb{R}^n} m_k(p) = f_k + g_k^\top p + \frac{1}{2} p^\top B_k p \;\;\; \text{s.t. } \lVert p \rVert \leq \delta_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\delta_k &gt; 0\)</span> is the trust-region radius. In any case, as described below, we need only an <em>approximate</em> solution to obtain convergence and good practical behavior.</p>
+<p>We choose the trust-region radius <span class="math notranslate nohighlight">\(m_k\)</span> based on the agreement between the model function <span class="math notranslate nohighlight">\(m_k\)</span> and the object function <span class="math notranslate nohighlight">\(f\)</span> at previous iterations. Given a step <span class="math notranslate nohighlight">\(p_k\)</span> we define the ratio</p>
+<div class="math notranslate nohighlight">
+\[\rho_k = \frac{f(x_k) - f(x_k + p_k)}{m_k(0) - m_k(p_k)}\]</div>
+<p>the numerator is called the <em>actual reduction</em> and the denominator is the <em>predicted reduction</em>. If <span class="math notranslate nohighlight">\(\rho_k\)</span> is close to zero or negative, we shrink the trust region by reducing <span class="math notranslate nohighlight">\(\delta_k\)</span> at the next iteration.</p>
+<div class="line-block">
+<div class="line"><strong>Algorithm 4.1</strong> (Trust Region).</div>
+<div class="line-block">
+<div class="line">Given <span class="math notranslate nohighlight">\(\hat{\delta} &gt; 0\)</span>, <span class="math notranslate nohighlight">\(\delta_0 \in (0, \hat{\delta})\)</span>, and <span class="math notranslate nohighlight">\(\eta \in \left[0, \frac{1}{4}\right)\)</span>:</div>
+<div class="line"><strong>for</strong> <span class="math notranslate nohighlight">\(k = 0, 1, 2, \dots\)</span></div>
+<div class="line-block">
+<div class="line">Obtain <span class="math notranslate nohighlight">\(p_k\)</span> by (approximately) solving <span class="math notranslate nohighlight">\(\min_{p \in \mathbb{R}^n} m_k(p) = f_k + g_k^\top p + \frac{1}{2} p^\top B_k p \;\;\; \text{s.t. } \lVert p \rVert \leq \delta_k\)</span>;</div>
+<div class="line">Evaluate <span class="math notranslate nohighlight">\(\rho_k\)</span>;</div>
+<div class="line"><strong>if</strong> <span class="math notranslate nohighlight">\(\rho_k &lt; \frac{1}{4}\)</span></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(\delta_{k+1} = \frac{1}{4}\delta_k\)</span></div>
+</div>
+<div class="line"><strong>else</strong></div>
+<div class="line-block">
+<div class="line"><strong>if</strong> <span class="math notranslate nohighlight">\(\rho_k &gt; \frac{3}{4}\)</span> and <span class="math notranslate nohighlight">\(\lVert \rho_k \rVert  = \delta_k\)</span></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(\delta_{k+1} = \min(2\delta_k, \hat{\delta})\)</span></div>
+</div>
+<div class="line"><strong>else</strong></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(\delta_{k+1} = \delta_k\)</span>;</div>
+</div>
+</div>
+<div class="line"><strong>if</strong> <span class="math notranslate nohighlight">\(\rho_k &gt; \eta\)</span></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(x_{k+1} = x_k + p_k\)</span></div>
+</div>
+<div class="line"><strong>else</strong></div>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(x_{k+1} = x_k\)</span>;</div>
+</div>
+</div>
+</div>
+<div class="line"><strong>end for</strong>.</div>
+</div>
+<p>Here <span class="math notranslate nohighlight">\(\hat{\delta}\)</span> is an overall bound on the step lengths. We restate the trust-region subporblem as</p>
+<div class="math notranslate nohighlight">
+\[\min_{p \in \mathbb{R}^n} m(p) \stackrel{\text{def}}{=} f + g^\top p + \frac{1}{2} p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta\]</div>
+<p><strong>Theorem 4.1.</strong> The vector <span class="math notranslate nohighlight">\(p^*\)</span> is a global solution of the trust-region problem</p>
+<div class="math notranslate nohighlight">
+\[\min_{p \in \mathbb{R}^n} m(p) = f + g^\top p + \frac{1}{2}p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta\]</div>
+<p>if and only if <span class="math notranslate nohighlight">\(p^*\)</span> is feasible and there is a scalar <span class="math notranslate nohighlight">\(\lambda \geq 0\)</span> such that the following conditions are satisfied:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}(B + \lambda I)p^* &amp; = -g \\
+\lambda (\delta - \lVert p^* \rVert) &amp; = 0 \\
+(B + \lambda I) &amp; \;\;\; \text{is positive semidefinite}\end{split}\]</div>
+<p>The figure below shows the properties of this theorem with different <span class="math notranslate nohighlight">\(\delta\)</span>. Note that</p>
+<div class="math notranslate nohighlight">
+\[\lambda p^* = - Bp^* - g = - \nabla m (p^*)\]</div>
+<p>Thus, when <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>, the solution <span class="math notranslate nohighlight">\(p^*\)</span> is collinear with the negative gradient of <span class="math notranslate nohighlight">\(m\)</span> and normal to its contours.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter3-5.html"
+                        title="previous chapter">3.5 Step-Length Selection Algorithms</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter4-1.html"
+                        title="next chapter">4.1 Algorithms Based on the Cauchy Point</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter-4.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter4-1.html" title="4.1 Algorithms Based on the Cauchy Point"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-5.html" title="3.5 Step-Length Selection Algorithms"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4 Trust-Region Methods</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

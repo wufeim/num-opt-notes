@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.2 Convergence of Line Search Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3.3 Rate of Convergence" href="chapter3-3.html" />
+    <link rel="prev" title="3.1 Introduction" href="chapter3-1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter3-3.html" title="3.3 Rate of Convergence"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-1.html" title="3.1 Introduction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" accesskey="U">3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.2 Convergence of Line Search Methods</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="convergence-of-line-search-methods">
+<h1>3.2 Convergence of Line Search Methods<a class="headerlink" href="#convergence-of-line-search-methods" title="Permalink to this headline">¶</a></h1>
+<p>We disucss requirements on the search direction in this section, focusing on the angle <span class="math notranslate nohighlight">\(\theta_k\)</span> between <span class="math notranslate nohighlight">\(p_k\)</span> and the steepest descent direction <span class="math notranslate nohighlight">\(-\nabla f_k\)</span>, defined by</p>
+<div class="math notranslate nohighlight">
+\[\cos \theta_k = \frac{-\nabla f_k^\top p_k}{\lVert \nabla f_k \rVert \lVert p_k \rVert}\]</div>
+<p>The following theorem, due to Zoutendijk, quantifies the effort of properly chosen step lengths <span class="math notranslate nohighlight">\(\alpha_k\)</span>, and shows that the steepest descent method is globally convergent. For other algorithms, it describes how far <span class="math notranslate nohighlight">\(p_k\)</span> can deviate from the steepest descent direction and still produce a globally convergent iteration.</p>
+<p><strong>Theorem 3.2.</strong> Consider any iteration of the form</p>
+<div class="math notranslate nohighlight">
+\[x_{k+1} = x_k + \alpha_kp_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(p_k\)</span> is a descent direction and <span class="math notranslate nohighlight">\(\alpha_k\)</span> satisfies the Wolfe conditions. Suppose that <span class="math notranslate nohighlight">\(f\)</span> is bounded below in <span class="math notranslate nohighlight">\(\mathbb{R}\)</span> and that <span class="math notranslate nohighlight">\(f\)</span> is continuously differentiable in an open set <span class="math notranslate nohighlight">\(\mathcal{N}\)</span> containing the level set <span class="math notranslate nohighlight">\(\mathcal{L} \stackrel{\text{def}}{=} \{x: f(x) \leq f(x_0)\}\)</span>, where <span class="math notranslate nohighlight">\(x_0\)</span> is the starting point of the iteration. Assuming also that the gradient <span class="math notranslate nohighlight">\(\nabla f\)</span> is Lipshitz continuous on <span class="math notranslate nohighlight">\(\mathcal{N}\)</span>, that is, there exists a constant <span class="math notranslate nohighlight">\(L &gt; 0\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\lVert \nabla f(x) - \nabla f(\tilde{x}) \leq L \lVert x - \tilde{x} \rVert, \;\;\; \text{for all } x, \tilde{x} \in \mathcal{N}\]</div>
+<p>Then</p>
+<div class="math notranslate nohighlight">
+\[\sum_{k \geq 0}^\infty \cos^2 \theta_k \lVert \nabla f_k \rVert^2 &lt; \infty\]</div>
+<p>Similar results to this theorem holds when the Goldstein conditions or strong Wolfe conditions are used. For all these strategies, the step length selection implies this inequality, which we call the <em>Zoutendijk condition</em>.</p>
+<p>The Zoutendijk condition implies that</p>
+<div class="math notranslate nohighlight">
+\[\cos^2 \theta_k \lVert \nabla f_k \rVert^2 \to 0\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>How to show this?</p>
+</div>
+<p>This limit can be used to derive global convergence results for line serach algortihms.</p>
+<p>If the angle <span class="math notranslate nohighlight">\(\theta_k\)</span> is bounded away from <span class="math notranslate nohighlight">\(\pi/2\)</span>, there is a positive constant <span class="math notranslate nohighlight">\(\delta\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\cos \theta_k \geq \delta &gt; 0, \;\;\; \text{for all } k\]</div>
+<p>It follows immediately that</p>
+<div class="math notranslate nohighlight">
+\[\lim_{k \to \infty} \lVert \nabla f_k \rVert = 0\]</div>
+<p>We use the term <em>globally convergent</em> to refer to algorithms for which this property is satisfied. For line serach methods of the general form, this limit is the strongest global convergence result that can be obtained. Only by making additional requirements on the search direction <span class="math notranslate nohighlight">\(p_k\)</span> -- by introducing negative curvature information from the Hessian <span class="math notranslate nohighlight">\(\nabla^2 f(x_k)\)</span> -- can we strengthen these results to include convergence to a local minimum.</p>
+<p>Consider now the Newton-like method and assume that the matrices <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> are positive definite with a uniformly bounded condition number. That is, there is a constant <span class="math notranslate nohighlight">\(M\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\lVert \mathbf{B}_k \rVert \lVert \mathbf{B}_k^{-1} \rVert \leq M, \;\;\; \text{for all } k\]</div>
+<p>It follows that</p>
+<div class="math notranslate nohighlight">
+\[\cos \theta_k \geq 1/M\]</div>
+<p>Thus we have</p>
+<div class="math notranslate nohighlight">
+\[\lim_{k \to \infty} \lVert \nabla f_k \rVert = 0\]</div>
+<p>Therefore, we have shown that Newton and quasi-Newton methods are globally convergent if the matrices <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> have a bounded condition number and are positive definite, and if the step lengths satisfy the Wolfe conditions.</p>
+<p>For some algorithms, such as conjugate gradient methods, we will be able to prove the limit, but only the weaker result</p>
+<div class="math notranslate nohighlight">
+\[\lim_{k \to \infty} \inf \lVert \nabla f_k \rVert = 0\]</div>
+<p>In other words, just a subsequence of the gradient norms <span class="math notranslate nohighlight">\(\lVert \nabla f_{k_j} \rVert\)</span> converges to zero. This can be proved using Zoutendijk's condition by contradiction. Therefore, for any algorithm that has a steepest descent step every <span class="math notranslate nohighlight">\(m\)</span> th iteration, we can prove global convergence.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter3-1.html"
+                        title="previous chapter">3.1 Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter3-3.html"
+                        title="next chapter">3.3 Rate of Convergence</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter3-2.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter3-3.html" title="3.3 Rate of Convergence"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-1.html" title="3.1 Introduction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" >3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.2 Convergence of Line Search Methods</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

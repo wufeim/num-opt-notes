@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.4 Newton&#39;s Method with Hessian Modification &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3.5 Step-Length Selection Algorithms" href="chapter3-5.html" />
+    <link rel="prev" title="3.3 Rate of Convergence" href="chapter3-3.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter3-5.html" title="3.5 Step-Length Selection Algorithms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-3.html" title="3.3 Rate of Convergence"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" accesskey="U">3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.4 Newton's Method with Hessian Modification</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="newton-s-method-with-hessian-modification">
+<h1>3.4 Newton's Method with Hessian Modification<a class="headerlink" href="#newton-s-method-with-hessian-modification" title="Permalink to this headline">¶</a></h1>
+<p>Away from the solution, the Hessian matrix <span class="math notranslate nohighlight">\(\nabla^2 f(x)\)</span> may not be positive definite, so the Newton direction defined by</p>
+<div class="math notranslate nohighlight">
+\[\nabla^2 f(x_k)p_k^N = - \nabla f(x_k)\]</div>
+<p>may not be a descent direction.</p>
+<div class="line-block">
+<div class="line"><strong>Algorithm 3.2</strong> (Line Search Newton with Modification).</div>
+<div class="line-block">
+<div class="line">Given initial point <span class="math notranslate nohighlight">\(x_0\)</span>;</div>
+<div class="line"><strong>for</strong> <span class="math notranslate nohighlight">\(k = 0, 1, 2, \dots\)</span></div>
+<div class="line-block">
+<div class="line">Factorize the matrix <span class="math notranslate nohighlight">\(B_k = \nabla^2f(x_k) + E_k\)</span>, where <span class="math notranslate nohighlight">\(E_k = 0\)</span> if <span class="math notranslate nohighlight">\(\nabla^2f(x_k)\)</span> is sufficiently positive definite; otherwise, <span class="math notranslate nohighlight">\(E_k\)</span> is chosen to ensure that <span class="math notranslate nohighlight">\(B_k\)</span> is sufficiently positive definite;</div>
+<div class="line">Solve <span class="math notranslate nohighlight">\(B_kp_k = - \nabla f(x_k)\)</span>;</div>
+<div class="line">Set <span class="math notranslate nohighlight">\(x_{k+1} = x_k + \alpha_kp_k\)</span>, where <span class="math notranslate nohighlight">\(\alpha_k\)</span> satisfies the Wolfe, Goldstein, or Armijo backtracking conditions;</div>
+</div>
+<div class="line"><strong>end</strong></div>
+</div>
+</div>
+<p>We would have fairly satisfactory global convergence results for it, provided that the strategy for choosing <span class="math notranslate nohighlight">\(E_k\)</span> satisfies the <em>bounded modified factorization</em> property. This property is that the matrices in the sequence <span class="math notranslate nohighlight">\(\{B_k\}\)</span> have bounded condition number whenever the sequence of Hessians <span class="math notranslate nohighlight">\(\{ \nabla^2f(x_k) \}\)</span> is bounded; that is,</p>
+<div class="math notranslate nohighlight">
+\[\kappa(B_k) = \lVert B_k \rVert \lVert B_k^{-1} \rVert \leq C, \;\;\; \text{some } C &gt; 0 \text{ and all } k = 0, 1, 2, \dots\]</div>
+<p>If this property holds, global convergence of the modified line search Newton method follows from the results of Section 3.2.</p>
+<p><strong>Theorem 3.8.</strong> Let <span class="math notranslate nohighlight">\(f\)</span> be twice continuously differentiable on an open set <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>, and assume that the starting point <span class="math notranslate nohighlight">\(x_0\)</span> of Algorithm 3.2 is such that the level set <span class="math notranslate nohighlight">\(\mathcal{L} = \{ x \in \mathcal{D}: f(x) \leq f(x_0)\}\)</span> is compact. Then if the bounded modified factorization property holds, we have that</p>
+<div class="math notranslate nohighlight">
+\[\lim_{k \to \infty} \nabla f(x_k) = 0\]</div>
+<p>For problems in which <span class="math notranslate nohighlight">\(\nabla f^*\)</span> is close to singular, there is no guarantee that the modification <span class="math notranslate nohighlight">\(E_k\)</span> will eventually vanish, and the convergence rate may be only linear. Besides requiring the modified matrix <span class="math notranslate nohighlight">\(B_k\)</span> to be well conditioned, we would like the modification to be as small as possible, so that the second-order information in the Hessian is preserved as far as possible.</p>
+<div class="section" id="eigenvalue-modification">
+<h2>Eigenvalue Modification<a class="headerlink" href="#eigenvalue-modification" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="adding-a-multiple-of-the-identity">
+<h2>Adding A Multiple of The Identity<a class="headerlink" href="#adding-a-multiple-of-the-identity" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="modified-cholesky-factorization">
+<h2>Modified Cholesky Factorization<a class="headerlink" href="#modified-cholesky-factorization" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="modified-symmetric-indefinite-factorization">
+<h2>Modified Symmetric Indefinite Factorization<a class="headerlink" href="#modified-symmetric-indefinite-factorization" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.4 Newton's Method with Hessian Modification</a><ul>
+<li><a class="reference internal" href="#eigenvalue-modification">Eigenvalue Modification</a></li>
+<li><a class="reference internal" href="#adding-a-multiple-of-the-identity">Adding A Multiple of The Identity</a></li>
+<li><a class="reference internal" href="#modified-cholesky-factorization">Modified Cholesky Factorization</a></li>
+<li><a class="reference internal" href="#modified-symmetric-indefinite-factorization">Modified Symmetric Indefinite Factorization</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter3-3.html"
+                        title="previous chapter">3.3 Rate of Convergence</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter3-5.html"
+                        title="next chapter">3.5 Step-Length Selection Algorithms</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter3-4.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter3-5.html" title="3.5 Step-Length Selection Algorithms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-3.html" title="3.3 Rate of Convergence"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" >3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.4 Newton's Method with Hessian Modification</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

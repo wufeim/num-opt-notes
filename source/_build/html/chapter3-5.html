@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.5 Step-Length Selection Algorithms &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4 Trust-Region Methods" href="chapter-4.html" />
+    <link rel="prev" title="3.4 Newton&#39;s Method with Hessian Modification" href="chapter3-4.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter-4.html" title="4 Trust-Region Methods"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-4.html" title="3.4 Newton&#39;s Method with Hessian Modification"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" accesskey="U">3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.5 Step-Length Selection Algorithms</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="step-length-selection-algorithms">
+<h1>3.5 Step-Length Selection Algorithms<a class="headerlink" href="#step-length-selection-algorithms" title="Permalink to this headline">¶</a></h1>
+<p>We now consider techniques for finding a minimum of the one-dimensional function</p>
+<div class="math notranslate nohighlight">
+\[\phi(\alpha) = f(x_k + \alpha p_k)\]</div>
+<p>or for simply finding a step length <span class="math notranslate nohighlight">\(\alpha_k\)</span> satisfying one of the termination conditions described in Section 3.1. We assume that <span class="math notranslate nohighlight">\(p_k\)</span> is a descent direction, so that our search can be confined to positive values of <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(f\)</span> is convex quadratic, <span class="math notranslate nohighlight">\(f(x) = \frac{1}{2} x^\top Qx - b^\top x\)</span>, its one-dimensional minimizer is given by</p>
+<div class="math notranslate nohighlight">
+\[\alpha_k = -\frac{\nabla f_k^\top p_k}{p_k^\top Qp_k}\]</div>
+<p>For general nonlinear functions, it is necessary to use an iterative procedure. The line search procedure deserves particular attention because it has a major impact on the robustness and efficiency of all nonlinear optimization methods.</p>
+<p>All line serach procedures require an initial estimate <span class="math notranslate nohighlight">\(\alpha_0\)</span> and generate a sequence <span class="math notranslate nohighlight">\(\{\alpha_i\}\)</span>. Typical procedures consist of two phases: a <em>bracketing phase</em> that finds an interval <span class="math notranslate nohighlight">\([\bar{a}, \bar{b}]\)</span> containing acceptable step lengths, and a <a href="#id1"><span class="problematic" id="id2">*</span></a>selection phase` that zooms in to locate the final step length.</p>
+<div class="section" id="interpolation">
+<h2>Interpolation<a class="headerlink" href="#interpolation" title="Permalink to this headline">¶</a></h2>
+<p>We begin by describing a line search procedure that aims to find a value of <span class="math notranslate nohighlight">\(\alpha\)</span> that satisfies the sufficient decrease condition, without being &quot;too small&quot;.</p>
+<p>We can write the sufficient decrease condition as</p>
+<div class="math notranslate nohighlight">
+\[\phi(\alpha_k) \leq \phi(0) + c_1\alpha_k \phi'(0)\]</div>
+<p>Suppose that the initial guess <span class="math notranslate nohighlight">\(\alpha_0\)</span> is given. If we have</p>
+<div class="math notranslate nohighlight">
+\[\phi(\alpha_0) \leq \phi(0) + c_1\alpha_0\phi'(0)\]</div>
+<p>this step length satisfies the condition, and we terminate the search. Otherwise we know that the interval <span class="math notranslate nohighlight">\([0, \alpha_0]\)</span> contains acceptable step lengths. We form a quadratic approximation <span class="math notranslate nohighlight">\(\phi_q(\alpha)\)</span> to <span class="math notranslate nohighlight">\(\phi\)</span> by interpolating <span class="math notranslate nohighlight">\(\phi(0)\)</span>, <span class="math notranslate nohighlight">\(\phi'(0)\)</span>, and <span class="math notranslate nohighlight">\(\phi(\alpha_0)\)</span> to obtain</p>
+<div class="math notranslate nohighlight">
+\[\phi_q(\alpha) = \left( \frac{\phi(\alpha_0) - \phi(0) - \alpha_0\phi'(0)}{\alpha_0^2} \right) \alpha^2 + \phi'(0)\alpha + \phi(0)\]</div>
+<p>The new trial value <span class="math notranslate nohighlight">\(\alpha_1\)</span> is defined as the minimizer of this quadratic, given by</p>
+<div class="math notranslate nohighlight">
+\[\alpha_1 = - \frac{\phi'(0)\alpha_0^2}{2[\phi(\alpha_0) - \phi(0) - \phi'(0)\alpha_0]}\]</div>
+<p>We terminate the search if the sufficient decrease condition is satisfied. Otherwise we construct a cubic function that interpolates the four pieces of information. This process of interpolating with a cubic function is repeated if necessary. If any <span class="math notranslate nohighlight">\(\alpha_i\)</span> is either too close to its predecessor <span class="math notranslate nohighlight">\(\alpha_{i-1}\)</span> or else too smaller than <span class="math notranslate nohighlight">\(\alpha_{i-1}\)</span>, we reset <span class="math notranslate nohighlight">\(\alpha_i = \alpha_{i-1}/2\)</span>.</p>
+<p>This strategy above assumes that derivative values are significantly more expenseive to compute than function values. Cubic interpolation provides a good model for functions with significant changes of curvature, and usually produces a quadratic rate of convergence to the minimizing values of <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+</div>
+<div class="section" id="initial-step-lengths">
+<h2>Initial Step Lengths<a class="headerlink" href="#initial-step-lengths" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="a-line-search-algorithm-for-the-wolfe-conditions">
+<h2>A Line Search Algorithm for The Wolfe Conditions<a class="headerlink" href="#a-line-search-algorithm-for-the-wolfe-conditions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.5 Step-Length Selection Algorithms</a><ul>
+<li><a class="reference internal" href="#interpolation">Interpolation</a></li>
+<li><a class="reference internal" href="#initial-step-lengths">Initial Step Lengths</a></li>
+<li><a class="reference internal" href="#a-line-search-algorithm-for-the-wolfe-conditions">A Line Search Algorithm for The Wolfe Conditions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter3-4.html"
+                        title="previous chapter">3.4 Newton's Method with Hessian Modification</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter-4.html"
+                        title="next chapter">4 Trust-Region Methods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter3-5.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter-4.html" title="4 Trust-Region Methods"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter3-4.html" title="3.4 Newton&#39;s Method with Hessian Modification"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-3.html" >3 Line Search Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3.5 Step-Length Selection Algorithms</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

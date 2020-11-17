@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Line Search Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3.1 Introduction" href="chapter3-1.html" />
+    <link rel="prev" title="Notes for Numerical Optimization (2nd)" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter3-1.html" title="3.1 Introduction"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Notes for Numerical Optimization (2nd)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3 Line Search Methods</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="line-search-methods">
+<h1>3 Line Search Methods<a class="headerlink" href="#line-search-methods" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter3-1.html">3.1 Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-1.html#the-wolfe-conditions">The Wolfe Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-1.html#the-goldstein-conditions">The Goldstein Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-1.html#sufficient-decrease-and-backtracking">Sufficient Decrease and Backtracking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3-2.html">3.2 Convergence of Line Search Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3-3.html">3.3 Rate of Convergence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-3.html#convergence-rate-of-steepest-descent">Convergence Rate of Steepest Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-3.html#newton-s-method">Newton's Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-3.html#quasi-newton-methods">Quasi-Newton Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3-4.html">3.4 Newton's Method with Hessian Modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-4.html#eigenvalue-modification">Eigenvalue Modification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-4.html#adding-a-multiple-of-the-identity">Adding A Multiple of The Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-4.html#modified-cholesky-factorization">Modified Cholesky Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-4.html#modified-symmetric-indefinite-factorization">Modified Symmetric Indefinite Factorization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3-5.html">3.5 Step-Length Selection Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-5.html#interpolation">Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-5.html#initial-step-lengths">Initial Step Lengths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter3-5.html#a-line-search-algorithm-for-the-wolfe-conditions">A Line Search Algorithm for The Wolfe Conditions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Each iteration of a line search method computes a search direction <span class="math notranslate nohighlight">\(p_k\)</span> and then decides how far to move along that direction. The iteration is given by</p>
+<div class="math notranslate nohighlight">
+\[x_{k+1} = x_k + \alpha_k p_k\]</div>
+<p>where the positive scalar <span class="math notranslate nohighlight">\(\alpha_k\)</span> is called the <em>step length</em>.</p>
+<p>Most line search algorithms require <span class="math notranslate nohighlight">\(p_k\)</span> to be a <em>descent direction</em> -- one for which <span class="math notranslate nohighlight">\(p_k^\top \nabla f_k &lt; 0\)</span> -- because this property guarantees that the function <span class="math notranslate nohighlight">\(f\)</span> can be reduced along this direction. Moreover, the search direction often has the form</p>
+<div class="math notranslate nohighlight">
+\[p_k = - \mathbf{B}_k^{-1} \nabla f_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> is a symmetric and nonsingular matrix. In the steepest descent method, <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> is simply the identity matrix <span class="math notranslate nohighlight">\(\mathbf{I}\)</span>. In Newton's method, <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> is the exact Hessian <span class="math notranslate nohighlight">\(\nabla^2 f(x_k)\)</span>. In quasi-Newton methods, <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> is an approximation to the Hessian updated by a low-rank formula. When <span class="math notranslate nohighlight">\(\mathbf{B}_k\)</span> is positive definite, we have</p>
+<div class="math notranslate nohighlight">
+\[p_k^\top \nabla f_k = - \nabla f_k^\top \mathbf{B}_k^{-1} \nabla f_k &lt; 0\]</div>
+<p>and therefore <span class="math notranslate nohighlight">\(p_k\)</span> is a descent direction. In this chapter, we discuss how to choose <span class="math notranslate nohighlight">\(\alpha_k\)</span> and <span class="math notranslate nohighlight">\(p_k\)</span> to promote convergence from remote starting points. We also study the rate of convergence of steepest descent, quasi-Newton, and Newton methods. We also discuss modifications to Newton methods in Section 3.4.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Notes for Numerical Optimization (2nd)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter3-1.html"
+                        title="next chapter">3.1 Introduction</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter-3.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter3-1.html" title="3.1 Introduction"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Notes for Numerical Optimization (2nd)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">3 Line Search Methods</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>
