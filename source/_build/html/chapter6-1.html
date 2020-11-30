@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.1 The BFGS Method &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="6 Quasi-Newton Methods" href="chapter-6.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter-6.html" title="6 Quasi-Newton Methods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" accesskey="U">6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.1 The BFGS Method</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-bfgs-method">
+<h1>6.1 The BFGS Method<a class="headerlink" href="#the-bfgs-method" title="Permalink to this headline">¶</a></h1>
+<p>The BFGS method is named for its discoverers Broyden, Fletcher, Goldfarb, and Shanno.</p>
+<p>We begin with the quadratic model of the objective function at the current iterate <span class="math notranslate nohighlight">\(x_k\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[m_k(p) = f_k + \nabla f_k^\top p + \frac{1}{2} p^\top B_k p\]</div>
+<p>Here <span class="math notranslate nohighlight">\(B_k\)</span> is an <span class="math notranslate nohighlight">\(n \times n\)</span> symmetric positive definite matrix that will be updated at every iteration. The minimizer <span class="math notranslate nohighlight">\(p_k\)</span> of this model is given by</p>
+<div class="math notranslate nohighlight">
+\[p_k = -B_k^{-1}\nabla f_k\]</div>
+<p>and is used as the search direction. The new iterate is</p>
+<div class="math notranslate nohighlight">
+\[x_{k+1} = x_k + \alpha_kp_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha_k\)</span> is chosen to satisfy the Wolfe conditions.</p>
+<p>Davidon proposed to update <span class="math notranslate nohighlight">\(B_k\)</span> in a simple manner to account for the curvature measured during the most recent step. Given <span class="math notranslate nohighlight">\(x_{k+1}\)</span>, we wish to construct a new quadratic model, of the form</p>
+<div class="math notranslate nohighlight">
+\[m_{k+1}(p) = f_{k+1} + \nabla f_{k+1}^\top p + \frac{1}{2}p^\top B_{k+1}p\]</div>
+<p>One resonable requirement of <span class="math notranslate nohighlight">\(B_{k+1}\)</span> is that the gradient of <span class="math notranslate nohighlight">\(m_{k+1}\)</span> should match the gradient of the objective function <span class="math notranslate nohighlight">\(f\)</span> at <span class="math notranslate nohighlight">\(x_k\)</span> and <span class="math notranslate nohighlight">\(x_{k+1}\)</span>. Since <span class="math notranslate nohighlight">\(\nabla m_{k+1}(0)\)</span> is precisely <span class="math notranslate nohighlight">\(\nabla f_{k+1}\)</span>, we only care about the first condition, written by</p>
+<div class="math notranslate nohighlight">
+\[\nabla m_{k+1}(-\alpha_kp_k) = \nabla f_{k+1} - \alpha_kB_{k+1}p_k = \nabla f_k\]</div>
+<p>Then we obtain</p>
+<div class="math notranslate nohighlight">
+\[B_{k+1}\alpha_k p_k = \nabla f_{k+1} - \nabla f_k\]</div>
+<p>To simplify the notation, we define the vectors</p>
+<div class="math notranslate nohighlight">
+\[s_k = x_{k+1} - x_k = \alpha_kp_k, \;\;\; y_k = \nabla f_{k+1} - \nabla f_k\]</div>
+<p>So we have</p>
+<div class="math notranslate nohighlight">
+\[B_{k+1}s_k = y_k\]</div>
+<p>We refer to this formula as the <strong>secant equation</strong>.</p>
+<p>The secant equation requires <span class="math notranslate nohighlight">\(B_k\)</span> maps <span class="math notranslate nohighlight">\(s_k\)</span> into <span class="math notranslate nohighlight">\(y_k\)</span>. This is possible only if <span class="math notranslate nohighlight">\(s_k\)</span> and <span class="math notranslate nohighlight">\(y_k\)</span> satisfy the <strong>curvature condition</strong></p>
+<div class="math notranslate nohighlight">
+\[s_k^\top y_k &gt; 0\]</div>
+<p>This does not always hold especially for nonconvex functions. However, it is guaranteed to hold if we impose the Wolfe or strong Wolfe conditions on the line search.</p>
+<p>To determine <span class="math notranslate nohighlight">\(B_k\)</span> uniquely, we impose the additional condition that <strong>among all symmetric matrices satisfying the secant equation, :math:`B_k` is, in some sense, closet to the current matrix :math:`B_k`</strong>. In other words, we solve the problem</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\min_B \; &amp; \lVert B - B_k \rVert \\
+\text{subject to } \; &amp; B = B^\top, \; Bs_k = y_k\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_k\)</span> and <span class="math notranslate nohighlight">\(y_k\)</span> satisfy the curvature condition and <span class="math notranslate nohighlight">\(B_k\)</span> is symmtric and positive definite. A matrix norm that allows easy solution of the minimization problem and gives rise to a scale-invariant optimization method is the weighted Frobenius norm</p>
+<div class="math notranslate nohighlight">
+\[\lVert A \rVert_W \equiv \lVert W^{1/2}AW^{1/2} \rVert_F\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lVert C \rVert_F = \sum_{i=1}^n \sum_{j=1}^n c_{ij}^2\)</span>. The weight matrix can be chosen as any matrix satisfying the relation <span class="math notranslate nohighlight">\(Wy_k = s_k\)</span>. We assume that <span class="math notranslate nohighlight">\(W = \bar{G}_k^{-1}\)</span> where <span class="math notranslate nohighlight">\(\bar{G}_k\)</span> is the <strong>average Hessian</strong> defined by</p>
+<div class="math notranslate nohighlight">
+\[\bar{G}_k = \left[ \int_0^1 \nabla^2 f(x_k + \tau\alpha_kp_k)d\tau \right]\]</div>
+<p>The property</p>
+<div class="math notranslate nohighlight">
+\[y_k = \bar{G}_k\alpha_kp_k = \bar{G}_ks_k\]</div>
+<p>follows from Taylor's theorem. With this weighting matrix and this norm, the unique solution is</p>
+<div class="math notranslate nohighlight">
+\[\text{(DFP)} \;\;\; B_{k+1} = (I - \rho_ky_ks_k^\top)B_k(I - \rho_ks_ky_k^\top) + \rho_ky_ky_k^\top\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[\rho_k = \frac{1}{y_k^\top s_k}\]</div>
+<p>This formula is called the <strong>DFP updating formula</strong>.</p>
+<p>The inverse of <span class="math notranslate nohighlight">\(B_k\)</span>, denoted by <span class="math notranslate nohighlight">\(H_k = B_k^{-1}\)</span> is useful in the implementation of the method. Using the Shereman-Morrison-Woodbury formula, we can derive the update of the inverse Hessian approximation <span class="math notranslate nohighlight">\(H_k\)</span></p>
+<div class="math notranslate nohighlight">
+\[H_{k+1} = H_k - \frac{H_ky_ky_k^\top H_k}{y_k^\top H_ky_K} + \frac{s_ks_k^\top}{y_k^\top s_k}\]</div>
+<p>The DFP updating formula was soon superseded by the BFGS formula. Instead of imposing conditions on <span class="math notranslate nohighlight">\(B_k\)</span>, we impose similar conditions on their inverses <span class="math notranslate nohighlight">\(H_k\)</span>. The secant condition is now written as</p>
+<div class="math notranslate nohighlight">
+\[H_{k+1}y_k = s_k\]</div>
+<p>The condition of closeness is given by</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\min_H \; &amp; \lVert H - H_k \rVert \\
+\text{subject to } \; &amp; H = H^\top, Hy_k = s_k\end{split}\]</div>
+<p>The unique solution <span class="math notranslate nohighlight">\(H_{k+1}\)</span> is given by</p>
+<div class="math notranslate nohighlight">
+\[\text{(BFGS)} \;\;\; H_{k+1} = (I - \rho_ks_ky_k^\top)H_k(I - \rho_ky_ks_k^\top) + \rho_ks_ks_k^\top\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[\rho_k = \frac{1}{y_k^\top s_k}\]</div>
+<div class="line-block">
+<div class="line"><strong>Algorithm 6.1</strong> (BFGS Method).</div>
+<div class="line-block">
+<div class="line">Given starting point <span class="math notranslate nohighlight">\(x_0\)</span>, convergence tolerance <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span>, inverse Hessian approximation <span class="math notranslate nohighlight">\(H_0\)</span>;</div>
+<div class="line"><span class="math notranslate nohighlight">\(k \leftarrow 0\)</span>;</div>
+<div class="line"><strong>while</strong> <span class="math notranslate nohighlight">\(\lVert \nabla f_k \rVert &gt; \epsilon\)</span>;</div>
+<div class="line-block">
+<div class="line">Compute search direction <span class="math notranslate nohighlight">\(p_k = -H_k\nabla f_k\)</span>;</div>
+<div class="line">Set <span class="math notranslate nohighlight">\(x_{k+1} = x_k + \alpha_kp_k\)</span> where <span class="math notranslate nohighlight">\(\alpha_k\)</span> is computed from a line search procedure to satisfy the Wolfe conditions;</div>
+<div class="line">Define <span class="math notranslate nohighlight">\(s_k = x_{k+1} - x_k\)</span> and <span class="math notranslate nohighlight">\(y_k = \nabla f_{k+1} - \nabla f_k\)</span>;</div>
+<div class="line">Compute <span class="math notranslate nohighlight">\(H_{k+1}\)</span> with <span class="math notranslate nohighlight">\(H_{k+1} = (I - \rho_ks_ky_k^\top)H_k(I - \rho_ky_ks_k^\top) + \rho_ks_ks_k^\top\)</span>;</div>
+<div class="line"><span class="math notranslate nohighlight">\(k \leftarrow k + 1\)</span>;</div>
+</div>
+<div class="line"><strong>end while</strong></div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter-6.html"
+                        title="previous chapter">6 Quasi-Newton Methods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter6-1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter-6.html" title="6 Quasi-Newton Methods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" >6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.1 The BFGS Method</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.2 Global Convergence &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5 Conjugate Gradient Methods" href="chapter-5.html" />
+    <link rel="prev" title="4.1 Algorithms Based on the Cauchy Point" href="chapter4-1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter-5.html" title="5 Conjugate Gradient Methods"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter4-1.html" title="4.1 Algorithms Based on the Cauchy Point"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-4.html" accesskey="U">4 Trust-Region Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4.2 Global Convergence</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="global-convergence">
+<h1>4.2 Global Convergence<a class="headerlink" href="#global-convergence" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="reduction-obtained-by-the-cauchy-point">
+<h2>Reduction Obtained by the Cauchy Point<a class="headerlink" href="#reduction-obtained-by-the-cauchy-point" title="Permalink to this headline">¶</a></h2>
+<p>The first main result is that the dogleg and two-dimensional subspace minimization algorithms and Steihaug's Algorithm produce approximate solutions <span class="math notranslate nohighlight">\(p_k\)</span> of the subproblem satisfying the following estimate of decrease in the model function</p>
+<div class="math notranslate nohighlight" id="equation-eq4-20">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq4-20" title="Permalink to this equation">¶</a></span>\[m_k(0) - m_k(p_k) \geq c_1 \lVert g_k \rVert \min\left(\delta_k, \frac{\lVert g_k \rVert}{\lVert B_k \rVert} \right)\]</div>
+<p><strong>Lemma 4.3.</strong> The Cauchy point <span class="math notranslate nohighlight">\(p_k^C\)</span> satisifies <a class="reference internal" href="#equation-eq4-20">(1)</a> with <span class="math notranslate nohighlight">\(c_1 = \frac{1}{2}\)</span>, that is,</p>
+<div class="math notranslate nohighlight">
+\[m_k(0) - m_k(p_k^C) \geq \frac{1}{2} \lVert g_k \rVert \min\left(\delta_k, \frac{\lVert g_k \rVert}{\lVert B_k \rVert} \right)\]</div>
+<p><strong>Theorem 4.4.</strong> Let <span class="math notranslate nohighlight">\(p_k\)</span> be any vector such that <span class="math notranslate nohighlight">\(\lVert p_k \rVert \leq \delta_k\)</span> and <span class="math notranslate nohighlight">\(m_k(0) - m_k(p_k) \geq c_2 (m_k(0) - m_k(p_k^C))\)</span>. Then <span class="math notranslate nohighlight">\(p_k\)</span> satisfies <a class="reference internal" href="#equation-eq4-20">(1)</a> with <span class="math notranslate nohighlight">\(c_1 = c_2 / 2\)</span>. In particular, if <span class="math notranslate nohighlight">\(p_k\)</span> is the exact solution of</p>
+<div class="math notranslate nohighlight">
+\[\min_{p \in \mathbb{R}^n} m_k(p) = f_k + g_k^\top p + \frac{1}{2} p^\top B_k p \;\;\; \text{s.t. } \lVert p \rVert \leq \delta_k\]</div>
+<p>then it satisfies <a class="reference internal" href="#equation-eq4-20">(1)</a> with <span class="math notranslate nohighlight">\(c_1 = \frac{1}{2}\)</span>.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.2 Global Convergence</a><ul>
+<li><a class="reference internal" href="#reduction-obtained-by-the-cauchy-point">Reduction Obtained by the Cauchy Point</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter4-1.html"
+                        title="previous chapter">4.1 Algorithms Based on the Cauchy Point</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter-5.html"
+                        title="next chapter">5 Conjugate Gradient Methods</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter4-2.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter-5.html" title="5 Conjugate Gradient Methods"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter4-1.html" title="4.1 Algorithms Based on the Cauchy Point"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-4.html" >4 Trust-Region Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">4.2 Global Convergence</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

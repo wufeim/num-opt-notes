@@ -106,7 +106,7 @@ The inverse of :math:`B_k`, denoted by :math:`H_k = B_k^{-1}` is useful in the i
 
 .. math::
 
-  \text{(DFP)} \;\;\; H_{k+1} = H_k - \frac{H_ky_ky_k^\top H_k}{y_k^\top H_ky_K} + \frac{s_ks_k^\top}{y_k^\top s_k}
+  H_{k+1} = H_k - \frac{H_ky_ky_k^\top H_k}{y_k^\top H_ky_K} + \frac{s_ks_k^\top}{y_k^\top s_k}
 
 The DFP updating formula was soon superseded by the BFGS formula. Instead of imposing conditions on :math:`B_k`, we impose similar conditions on their inverses :math:`H_k`. The secant condition is now written as
 
@@ -143,17 +143,3 @@ with
 |     Compute :math:`H_{k+1}` with :math:`H_{k+1} = (I - \rho_ks_ky_k^\top)H_k(I - \rho_ky_ks_k^\top) + \rho_ks_ks_k^\top`;
 |     :math:`k \leftarrow k + 1`;
 |   **end while**
-
-Each iteration can be performed at a cost of :math:`O(n^2)` arithmetic operations and the rate of convergence is superlinear, which is fast enough for most practical purposes.
-
-We can derive a version of the BFGS algorithm that works with the Hessian approximation :math:`B_k` rather than :math:`H_k`. With Sherman-Morrison-Woodbury we have
-
-.. math::
-
-  \text{(BFGS)} \;\;\; B_{k+1} = B_k - \frac{B_ks_ks_k^\topB_k}{s_k^\top B_ks_k} + \frac{y_ky_k^\top}{y_k^\top s_k}
-
-Properties of The BFGS Method
--------------------------------------
-
-implementation
--------------------------------------

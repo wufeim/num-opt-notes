@@ -18,6 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.2 Global Convergence" href="chapter4-2.html" />
     <link rel="prev" title="4 Trust-Region Methods" href="chapter-4.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -26,6 +27,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter4-2.html" title="4.2 Global Convergence"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="chapter-4.html" title="4 Trust-Region Methods"
              accesskey="P">previous</a> |</li>
@@ -46,7 +50,7 @@
 <h2>The Cauchy Point<a class="headerlink" href="#the-cauchy-point" title="Permalink to this headline">¶</a></h2>
 <p>It is enough for purposes of global convergence to find an approximate solution <span class="math notranslate nohighlight">\(p_k\)</span> that lies within the trust region and gives a <em>sufficient reduction</em> in the model. The sufficient reduction can be quantified in terms of the Cauchy point, denoted by <span class="math notranslate nohighlight">\(p_k^c\)</span>.</p>
 <div class="line-block">
-<div class="line"><strong>Algorithm 4.2</strong> (Cauchy Point Calculation).</div>
+<div class="line"><strong>Algorithm 4.2</strong> (Steihaug's Algorithm, Cauchy Point Calculation).</div>
 <div class="line-block">
 <div class="line">Find the vector <span class="math notranslate nohighlight">\(p_k^s\)</span> that solves a linear version of the trust-region subproblem, given by</div>
 <div class="line-block">
@@ -82,10 +86,36 @@
 </div>
 <div class="section" id="the-dogleg-method">
 <h2>The Dogleg method<a class="headerlink" href="#the-dogleg-method" title="Permalink to this headline">¶</a></h2>
-<p>The <em>dogleg method</em> an be used when <span class="math notranslate nohighlight">\(B\)</span> is positive definite.</p>
+<p>The <em>dogleg method</em> an be used when <span class="math notranslate nohighlight">\(B\)</span> is positive definite. The unconstrained minimizer of <span class="math notranslate nohighlight">\(m\)</span> is <span class="math notranslate nohighlight">\(p^B = -B^{-1}g\)</span>, so we have</p>
+<div class="math notranslate nohighlight">
+\[p^*(\delta) = p^B \;\;\; \text{when } \delta \geq \lVert p^B \rVert\]</div>
+<p>When <span class="math notranslate nohighlight">\(delta\)</span> is small relative to <span class="math notranslate nohighlight">\(p^B\)</span>, the restriction <span class="math notranslate nohighlight">\(\lVert p \rVert \leq \delta\)</span> ensures that the quadratic term in <span class="math notranslate nohighlight">\(m\)</span> has little effect on the solution, and we can get an approximation to <span class="math notranslate nohighlight">\(p(\delta)\)</span> by omitting the qudaratic term and writing</p>
+<div class="math notranslate nohighlight">
+\[p^*(\delta) \approx - \delta \frac{g}{\lVert g \rVert} \;\;\; \text{when } \delta \text{ is small}\]</div>
+<p>For intermediate values of <span class="math notranslate nohighlight">\(\delta\)</span>, the solution <span class="math notranslate nohighlight">\(p^*(\delta)\)</span> typically follows a curved trajectory like the one in the figure below.</p>
+<a class="reference internal image-reference" href="_images/fig4-3.png"><img alt="_images/fig4-3.png" src="_images/fig4-3.png" style="width: 320pt;" /></a>
+<p>The dogleg method finds an approximate solution by replacing the curved trajectory for <span class="math notranslate nohighlight">\(p^*(\delta)\)</span> with a path consisting of two line segments. The first line segment runs from the origin to the minimizer of <span class="math notranslate nohighlight">\(m\)</span> along the steepest descent direction, which is</p>
+<div class="math notranslate nohighlight">
+\[p^U = - \frac{g^\top g}{g^\top Bg} g\]</div>
+<p>while the second line segment runs from <span class="math notranslate nohighlight">\(p^U\)</span> to <span class="math notranslate nohighlight">\(p^B\)</span>. We denote this trajectory by <span class="math notranslate nohighlight">\(\tilde{p}(\tau)\)</span> for <span class="math notranslate nohighlight">\(\tau \in [0, 2]\)</span>, where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\tilde{p}(\tau) = \begin{cases}
+  \tau p^U &amp; 0 \leq \tau \leq 1 \\
+  p^U + (\tau - 1)(p^B - p^U)
+\end{cases}\end{split}\]</div>
+<p>The dogleg method chooses <span class="math notranslate nohighlight">\(p\)</span> to minimize the model <span class="math notranslate nohighlight">\(m\)</span> along this path.</p>
+<p><strong>Lemma 4.2.</strong> Let <span class="math notranslate nohighlight">\(B\)</span> be positive definite, then
+1. <span class="math notranslate nohighlight">\(\lVert \tilde{p}(\tau) \rVert\)</span> is an increasing function of <span class="math notranslate nohighlight">\(\tau\)</span>
+2. <span class="math notranslate nohighlight">\(m(\tilde{p}(\tau))\)</span> is a decreasing function of <span class="math notranslate nohighlight">\(\tau\)</span></p>
+<p>It follows that the chosen value <span class="math notranslate nohighlight">\(p\)</span> will be at <span class="math notranslate nohighlight">\(p^B\)</span> if <span class="math notranslate nohighlight">\(\lVert p^B \rVert \leq \delta\)</span>, otherwise at the point of intersection of the dogleg and the trust-region boundary.</p>
+<p>When the exact Hessian <span class="math notranslate nohighlight">\(\nabla^2 f(x_k)\)</span> is available, we find the Newton-dogleg step. We conclude that the Newton-dogleg method is most appropriate when the objective function is convex (when <span class="math notranslate nohighlight">\(\nabla^2 f(x_k)\)</span> is always positive semidefinite).</p>
 </div>
 <div class="section" id="two-dimensional-subspace-minimization">
 <h2>Two-Dimensional Subspace Minimization<a class="headerlink" href="#two-dimensional-subspace-minimization" title="Permalink to this headline">¶</a></h2>
+<p>The dogleg method can be made slightly more complicated by widening the search for <span class="math notranslate nohighlight">\(p\)</span> to the entire two-dimensional subspace spanned by <span class="math notranslate nohighlight">\(p^U\)</span> and <span class="math notranslate nohighlight">\(p^B\)</span>. The subproblem is repalced by</p>
+<div class="math notranslate nohighlight">
+\[\min_p m(p) = f + g^\top p + \frac{1}{2} p^\top Bp \;\;\; \text{s.t. } \lVert p \rVert \leq \delta, p \in \text{span}[g, B^{-1}g]\]</div>
+<p>It can be reduced to finding the roots of a fourth degree polynomial. Clearly the Cauchy point <span class="math notranslate nohighlight">\(p^C\)</span> is feasible, resulting in global convergence of the algorithm.</p>
 </div>
 </div>
 
@@ -110,6 +140,9 @@
   <h4>Previous topic</h4>
   <p class="topless"><a href="chapter-4.html"
                         title="previous chapter">4 Trust-Region Methods</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter4-2.html"
+                        title="next chapter">4.2 Global Convergence</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -137,6 +170,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="chapter4-2.html" title="4.2 Global Convergence"
+             >next</a> |</li>
         <li class="right" >
           <a href="chapter-4.html" title="4 Trust-Region Methods"
              >previous</a> |</li>

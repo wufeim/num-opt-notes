@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.1 The Linear Conjugate Gradient Method &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5.2 Nonlinear Conjugate Gradient Method" href="chapter5-2.html" />
+    <link rel="prev" title="5 Conjugate Gradient Methods" href="chapter-5.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter-5.html" title="5 Conjugate Gradient Methods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-5.html" accesskey="U">5 Conjugate Gradient Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">5.1 The Linear Conjugate Gradient Method</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-linear-conjugate-gradient-method">
+<h1>5.1 The Linear Conjugate Gradient Method<a class="headerlink" href="#the-linear-conjugate-gradient-method" title="Permalink to this headline">¶</a></h1>
+<p>The conjugate gradient method is an iterative method for solving a lienar system of equations</p>
+<div class="math notranslate nohighlight">
+\[Ax = b\]</div>
+<p>where <span class="math notranslate nohighlight">\(A\)</span> is an <span class="math notranslate nohighlight">\(n \times n\)</span> symmetric positive definite matrix. This problem can be stated equivalently as the following minimization problem</p>
+<div class="math notranslate nohighlight">
+\[\min \phi(x) \stackrel{\text{def}}{=} \frac{1}{2} x^\top Ax - b^\top x\]</div>
+<p>For further reference, we note that the gradient of <span class="math notranslate nohighlight">\(\phi\)</span> equals the residual of the linear system</p>
+<div class="math notranslate nohighlight">
+\[\nabla \phi(x) = Ax - b \stackrel{\text{def}}{=} r(x)\]</div>
+<div class="section" id="conjugate-direction-methods">
+<h2>Conjugate Direction Methods<a class="headerlink" href="#conjugate-direction-methods" title="Permalink to this headline">¶</a></h2>
+<p>One of the remarkable properties of the conjugate gradient method is its ability to generate a set of vectors with a property knwon as <strong>conjugacy</strong>. A set of nonzero vectors <span class="math notranslate nohighlight">\(\{p_0, \dots, p_l\}\)</span> is said to be <em>conjugate</em> with respect to the symmetric positive definite <span class="math notranslate nohighlight">\(A\)</span> if</p>
+<div class="math notranslate nohighlight">
+\[p_k^\top A p_j = 0, \;\;\; \text{for all } i \neq j\]</div>
+<p>It is easy to show that such set of vectors is linearly independent.</p>
+<p>The importance of conjugacy lies in the fact that we can minimize <span class="math notranslate nohighlight">\(\phi(\cdot)\)</span> in <span class="math notranslate nohighlight">\(n\)</span> steps by successively minimizing it along the individual directions in a conjugate set. We consider the following <strong>conjugate direction method</strong>. Given a starting point <span class="math notranslate nohighlight">\(x_0 \in \mathbb{R}^n\)</span> and a set of conjugate directions <span class="math notranslate nohighlight">\(\{p_0, \dots, p_{n-1}\}\)</span>, we generate the sequence <span class="math notranslate nohighlight">\(\{x_k\}\)</span> by setting</p>
+<div class="math notranslate nohighlight">
+\[x_{k+1} = x_k + \alpha_k p_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha_k\)</span> is the one-dimensional minimizer of the quadratic function <span class="math notranslate nohighlight">\(\phi(k)\)</span> given by</p>
+<div class="math notranslate nohighlight">
+\[\alpha_k = - \frac{r_k^\top p_k}{p_k^\top A p_k}\]</div>
+<p><strong>Theorem 5.1.</strong> For any <span class="math notranslate nohighlight">\(x_0 \in \mathbb{R}^n\)</span> the sequence <span class="math notranslate nohighlight">\(\{x_k\}\)</span> generated by the conjugate direction algorithm converges to the solution <span class="math notranslate nohighlight">\(x^*\)</span> of the linear system in at most <span class="math notranslate nohighlight">\(n\)</span> steps.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.1 The Linear Conjugate Gradient Method</a><ul>
+<li><a class="reference internal" href="#conjugate-direction-methods">Conjugate Direction Methods</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter-5.html"
+                        title="previous chapter">5 Conjugate Gradient Methods</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter5-2.html"
+                        title="next chapter">5.2 Nonlinear Conjugate Gradient Method</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter5-1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter-5.html" title="5 Conjugate Gradient Methods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-5.html" >5 Conjugate Gradient Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">5.1 The Linear Conjugate Gradient Method</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>
