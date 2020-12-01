@@ -17,7 +17,7 @@ If :math:`f` is convex quadratic, :math:`f(x) = \frac{1}{2} x^\top Qx - b^\top x
 
 For general nonlinear functions, it is necessary to use an iterative procedure. The line search procedure deserves particular attention because it has a major impact on the robustness and efficiency of all nonlinear optimization methods.
 
-All line serach procedures require an initial estimate :math:`\alpha_0` and generate a sequence :math:`\{\alpha_i\}`. Typical procedures consist of two phases: a *bracketing phase* that finds an interval :math:`[\bar{a}, \bar{b}]` containing acceptable step lengths, and a *selection phase` that zooms in to locate the final step length.
+All line serach procedures require an initial estimate :math:`\alpha_0` and generate a sequence :math:`\{\alpha_i\}`. Typical procedures consist of two phases: a *bracketing phase* that finds an interval :math:`[\bar{a}, \bar{b}]` containing acceptable step lengths, and a *selection phase* that zooms in to locate the final step length.
 
 Interpolation
 -------------------------------------
