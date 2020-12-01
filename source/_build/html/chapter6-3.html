@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6 Quasi-Newton Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <title>6.3 The Broyden Class &#8212; Notes for Numerical Optimization 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,8 +18,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6.1 The BFGS Method" href="chapter6-1.html" />
-    <link rel="prev" title="5.2 Nonlinear Conjugate Gradient Method" href="chapter5-2.html" /> 
+    <link rel="next" title="6.4 Convergence Analysis" href="chapter6-4.html" />
+    <link rel="prev" title="6.2 The SR2 Method" href="chapter6-2.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,13 +28,14 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter6-4.html" title="6.4 Convergence Analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter6-2.html" title="6.2 The SR2 Method"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" accesskey="U">6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.3 The Broyden Class</a></li> 
       </ul>
     </div>  
 
@@ -43,29 +44,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quasi-newton-methods">
-<h1>6 Quasi-Newton Methods<a class="headerlink" href="#quasi-newton-methods" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-1.html">6.1 The BFGS Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#properties-of-the-bfgs-method">Properties of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#implementation">implementation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-2.html">6.2 The SR2 Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-2.html#properties-of-sr1-updating">Properties of SR1 updating</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-3.html">6.3 The Broyden Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-4.html">6.4 Convergence Analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#global-convergence-of-the-bfgs-method">Global Convergence of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#superliner-convergence-of-the-bfgs-method">Superliner Convergence of the BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#convergence-analysis-of-the-sr1-method">Convergence Analysis of the SR1 Method</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<p>Quasi-Newton methods require only the gradient of the objective function at each iterate. By measuring the changes in gradient, they construct a model of the objective function that is good enough to produce superlinear convergence.</p>
+  <div class="section" id="the-broyden-class">
+<h1>6.3 The Broyden Class<a class="headerlink" href="#the-broyden-class" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -76,15 +56,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="chapter5-2.html"
-                        title="previous chapter">5.2 Nonlinear Conjugate Gradient Method</a></p>
+  <p class="topless"><a href="chapter6-2.html"
+                        title="previous chapter">6.2 The SR2 Method</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="chapter6-1.html"
-                        title="next chapter">6.1 The BFGS Method</a></p>
+  <p class="topless"><a href="chapter6-4.html"
+                        title="next chapter">6.4 Convergence Analysis</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/chapter-6.rst.txt"
+      <li><a href="_sources/chapter6-3.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -109,13 +89,14 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter6-4.html" title="6.4 Convergence Analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter6-2.html" title="6.2 The SR2 Method"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" >6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.3 The Broyden Class</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
