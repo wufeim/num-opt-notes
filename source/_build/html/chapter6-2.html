@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6 Quasi-Newton Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <title>6.2 The SR2 Method &#8212; Notes for Numerical Optimization 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,8 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6.1 The BFGS Method" href="chapter6-1.html" />
-    <link rel="prev" title="5.2 Nonlinear Conjugate Gradient Method" href="chapter5-2.html" /> 
+    <link rel="prev" title="6.1 The BFGS Method" href="chapter6-1.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,12 +28,10 @@
              accesskey="I">index</a></li>
         <li class="right" >
           <a href="chapter6-1.html" title="6.1 The BFGS Method"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" accesskey="U">6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.2 The SR2 Method</a></li> 
       </ul>
     </div>  
 
@@ -43,19 +40,27 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quasi-newton-methods">
-<h1>6 Quasi-Newton Methods<a class="headerlink" href="#quasi-newton-methods" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-1.html">6.1 The BFGS Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#properties-of-the-bfgs-method">Properties of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#implementation">implementation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-2.html">6.2 The SR2 Method</a></li>
-</ul>
-</div>
-<p>Quasi-Newton methods require only the gradient of the objective function at each iterate. By measuring the changes in gradient, they construct a model of the objective function that is good enough to produce superlinear convergence.</p>
+  <div class="section" id="the-sr2-method">
+<h1>6.2 The SR2 Method<a class="headerlink" href="#the-sr2-method" title="Permalink to this headline">¶</a></h1>
+<p>There is in fact a simpler rank-1 update for <span class="math notranslate nohighlight">\(B_k\)</span> that maintains symmetry of the matrix and allows it to satisfy the secant equation. However, this <strong>symmetric-rank-1</strong>, or SR1, update does not guarantee that the updated matrix maintains positive definiteness.</p>
+<p>The symmetric rank-1 update has the general form</p>
+<div class="math notranslate nohighlight">
+\[B_{k+1} = B_k + \sigma vv^\top\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma = \pm 1\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> and <span class="math notranslate nohighlight">\(v\)</span> are chosen so that <span class="math notranslate nohighlight">\(B_{k+1}\)</span> satisfies the secant equation <span class="math notranslate nohighlight">\(y_k = B_{k+1}s_k\)</span>. By substituting into this equation, we obtain</p>
+<div class="math notranslate nohighlight">
+\[y_k = B_ks_k + [\sigma v^\top s_k] v\]</div>
+<p>Since <span class="math notranslate nohighlight">\(\sigma v^\top s_k\)</span> is a scalar, <span class="math notranslate nohighlight">\(v\)</span> must be a multiple of <span class="math notranslate nohighlight">\(y_k - B_ks_k\)</span>. Let <span class="math notranslate nohighlight">\(v = \delta (y_k - B_ks_k)\)</span>. It follows that</p>
+<div class="math notranslate nohighlight">
+\[(y_k - B_ks_k) = \sigma \delta^2 \left[ s_k^\top (y_k - B_ks_k) \right](y_k - B_ks_k)\]</div>
+<p>This equation is satisfied if and only if we choose</p>
+<div class="math notranslate nohighlight">
+\[\sigma = \text{sign} \left[s_k^\top (y_k - B_ks_k)\right], \;\;\; \delta = \pm \left\lvert s_k^\top (y_k - B_ks_k) \right\rvert^{-1/2}\]</div>
+<p>Hence we have shown that the only symmetric rank-1 updating formula that satisfies the secant equation is given by</p>
+<div class="math notranslate nohighlight">
+\[\text{(SR1)} \;\;\; B_{k+1} = B_k + \frac{(y_k - B_ks_k)(y_k - B_ks_k)^\top}{(y_k - B_ks_k)^\top s_k}\]</div>
+<p>By applying the Sherman-Morrison formula, we obtain the updating formula for the inverse Hessian approximation <span class="math notranslate nohighlight">\(H_k\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{(SR1)} \;\;\; H_{k+1} = H_k + \frac{(s_k - H_ky_K)(s_k - H_ky_k)^\top}{(s_k - H_ky_k)^\top y_k}\]</div>
 </div>
 
 
@@ -66,15 +71,12 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="chapter5-2.html"
-                        title="previous chapter">5.2 Nonlinear Conjugate Gradient Method</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="chapter6-1.html"
-                        title="next chapter">6.1 The BFGS Method</a></p>
+                        title="previous chapter">6.1 The BFGS Method</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/chapter-6.rst.txt"
+      <li><a href="_sources/chapter6-2.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -100,12 +102,10 @@
              >index</a></li>
         <li class="right" >
           <a href="chapter6-1.html" title="6.1 The BFGS Method"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+          <li class="nav-item nav-item-1"><a href="chapter-6.html" >6 Quasi-Newton Methods</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">6.2 The SR2 Method</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
