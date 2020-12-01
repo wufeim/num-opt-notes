@@ -150,7 +150,7 @@ We can derive a version of the BFGS algorithm that works with the Hessian approx
 
 .. math::
 
-  \text{(BFGS)} \;\;\; B_{k+1} = B_k - \frac{B_ks_ks_k^\topB_k}{s_k^\top B_ks_k} + \frac{y_ky_k^\top}{y_k^\top s_k}
+  \text{(BFGS)} \;\;\; B_{k+1} = B_k - \frac{B_ks_ks_k^\top B_k}{s_k^\top B_ks_k} + \frac{y_ky_k^\top}{y_k^\top s_k}
 
 Properties of The BFGS Method
 -------------------------------------
