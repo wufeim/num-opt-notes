@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.4 Algorithms for Partially Separable Functions &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8 Calculating Derivatives" href="chapter-8.html" />
+    <link rel="prev" title="7.1 Inexact Newton Methods" href="chapter7-1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter-8.html" title="8 Calculating Derivatives"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter7-1.html" title="7.1 Inexact Newton Methods"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-7.html" accesskey="U">7 Large-Scale Unconstrained Optimization</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">7.4 Algorithms for Partially Separable Functions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="algorithms-for-partially-separable-functions">
+<h1>7.4 Algorithms for Partially Separable Functions<a class="headerlink" href="#algorithms-for-partially-separable-functions" title="Permalink to this headline">¶</a></h1>
+<p>In a <strong>separable</strong> unconstrained optimization, the objective function can be decomposed into a sum of simpler functions that can be optimized independently.</p>
+<div class="math notranslate nohighlight">
+\[f(x) = f_1(x_1, x_3) + f_2(x_2, x_4, x_6) + f_3(x_5)\]</div>
+<p>The cost of performing <span class="math notranslate nohighlight">\(m\)</span> lower-dimensional optimizations is much less in general than the cost of optimizing an <span class="math notranslate nohighlight">\(n\)</span>-dimensional function.</p>
+<p>In many large problems, the objective function <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}\)</span> is not separable, but it can still be written as the sum of simpler function, known as <strong>element functions</strong>. Each element function has the property that it is unaffected when we move along a large number of linearly independent directions. If this property holds, we say that <span class="math notranslate nohighlight">\(f\)</span> is partially separable. All functions whose Hessian <span class="math notranslate nohighlight">\(\nabla^2 f\)</span> are sparse are partially separable, but so are many functions whose Hessian is not sparse.</p>
+<p>The simplest form of partial separability arises when the objective function can be written as</p>
+<div class="math notranslate nohighlight">
+\[f(x) = \sum_{i=1}^{ne} f_i(x)\]</div>
+<p>where each of the element functions <span class="math notranslate nohighlight">\(f_i\)</span> depends on only a few components of <span class="math notranslate nohighlight">\(x\)</span>. It follows that the gradients <span class="math notranslate nohighlight">\(\nabla f_i\)</span> and Hessian <span class="math notranslate nohighlight">\(\nabla^2 f_i\)</span> of each element function contain just a few nonzeros. We obtain</p>
+<div class="math notranslate nohighlight">
+\[\nabla f(x) = \sum_{i=1}^{ne} \nabla f_i(x), \;\;\; \nabla^2f(x) = \sum_{i=1}^{ne} \nabla^2 f_i(x)\]</div>
+<p>It is more effective to maintian quasi-Newton approximations to each of the element Hessians <span class="math notranslate nohighlight">\(\nabla^2 f_i(x)\)</span> separably, rather than approximating the entire Hessian <span class="math notranslate nohighlight">\(\nabla^2f(x)\)</span>.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter7-1.html"
+                        title="previous chapter">7.1 Inexact Newton Methods</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter-8.html"
+                        title="next chapter">8 Calculating Derivatives</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter7-4.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter-8.html" title="8 Calculating Derivatives"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter7-1.html" title="7.1 Inexact Newton Methods"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-7.html" >7 Large-Scale Unconstrained Optimization</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">7.4 Algorithms for Partially Separable Functions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

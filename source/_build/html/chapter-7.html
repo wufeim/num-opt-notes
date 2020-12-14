@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6 Quasi-Newton Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <title>7 Large-Scale Unconstrained Optimization &#8212; Notes for Numerical Optimization 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,8 +18,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6.1 The BFGS Method" href="chapter6-1.html" />
-    <link rel="prev" title="5.2 Nonlinear Conjugate Gradient Method" href="chapter5-2.html" /> 
+    <link rel="next" title="7.1 Inexact Newton Methods" href="chapter7-1.html" />
+    <link rel="prev" title="6.4 Convergence Analysis" href="chapter6-4.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,13 +28,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter7-1.html" title="7.1 Inexact Newton Methods"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter6-4.html" title="6.4 Convergence Analysis"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+        <li class="nav-item nav-item-this"><a href="">7 Large-Scale Unconstrained Optimization</a></li> 
       </ul>
     </div>  
 
@@ -43,29 +43,19 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quasi-newton-methods">
-<h1>6 Quasi-Newton Methods<a class="headerlink" href="#quasi-newton-methods" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="large-scale-unconstrained-optimization">
+<h1>7 Large-Scale Unconstrained Optimization<a class="headerlink" href="#large-scale-unconstrained-optimization" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-1.html">6.1 The BFGS Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#properties-of-the-bfgs-method">Properties of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#implementation">implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7-1.html">7.1 Inexact Newton Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter7-1.html#local-convergence-of-inexact-newton-methods">Local Convergence of Inexact Newton Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter7-1.html#line-search-newton-cg-method">Line Search Newton-CG Method</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-2.html">6.2 The SR1 Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-2.html#properties-of-sr1-updating">Properties of SR1 updating</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-3.html">6.3 The Broyden Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-4.html">6.4 Convergence Analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#global-convergence-of-the-bfgs-method">Global Convergence of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#superliner-convergence-of-the-bfgs-method">Superliner Convergence of the BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#convergence-analysis-of-the-sr1-method">Convergence Analysis of the SR1 Method</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7-4.html">7.4 Algorithms for Partially Separable Functions</a></li>
 </ul>
 </div>
-<p>Quasi-Newton methods require only the gradient of the objective function at each iterate. By measuring the changes in gradient, they construct a model of the objective function that is good enough to produce superlinear convergence.</p>
+<p>Problems with thousands or millions of variables can be solved efficiently only if the storage and computational costs of the optimization problem can be kept at a tolerable level.</p>
 </div>
 
 
@@ -76,15 +66,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="chapter5-2.html"
-                        title="previous chapter">5.2 Nonlinear Conjugate Gradient Method</a></p>
+  <p class="topless"><a href="chapter6-4.html"
+                        title="previous chapter">6.4 Convergence Analysis</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="chapter6-1.html"
-                        title="next chapter">6.1 The BFGS Method</a></p>
+  <p class="topless"><a href="chapter7-1.html"
+                        title="next chapter">7.1 Inexact Newton Methods</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/chapter-6.rst.txt"
+      <li><a href="_sources/chapter-7.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -109,13 +99,13 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter7-1.html" title="7.1 Inexact Newton Methods"
              >next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter6-4.html" title="6.4 Convergence Analysis"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+        <li class="nav-item nav-item-this"><a href="">7 Large-Scale Unconstrained Optimization</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

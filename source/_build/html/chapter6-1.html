@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6.2 The SR2 Method" href="chapter6-2.html" />
+    <link rel="next" title="6.2 The SR1 Method" href="chapter6-2.html" />
     <link rel="prev" title="6 Quasi-Newton Methods" href="chapter-6.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -28,7 +28,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="chapter6-2.html" title="6.2 The SR2 Method"
+          <a href="chapter6-2.html" title="6.2 The SR1 Method"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="chapter-6.html" title="6 Quasi-Newton Methods"
@@ -132,7 +132,7 @@
 <p>Each iteration can be performed at a cost of <span class="math notranslate nohighlight">\(O(n^2)\)</span> arithmetic operations and the rate of convergence is superlinear, which is fast enough for most practical purposes.</p>
 <p>We can derive a version of the BFGS algorithm that works with the Hessian approximation <span class="math notranslate nohighlight">\(B_k\)</span> rather than <span class="math notranslate nohighlight">\(H_k\)</span>. With Sherman-Morrison-Woodbury we have</p>
 <div class="math notranslate nohighlight">
-\[\text{(BFGS)} \;\;\; B_{k+1} = B_k - \frac{B_ks_ks_k^\topB_k}{s_k^\top B_ks_k} + \frac{y_ky_k^\top}{y_k^\top s_k}\]</div>
+\[\text{(BFGS)} \;\;\; B_{k+1} = B_k - \frac{B_ks_ks_k^\top B_k}{s_k^\top B_ks_k} + \frac{y_ky_k^\top}{y_k^\top s_k}\]</div>
 <div class="section" id="properties-of-the-bfgs-method">
 <h2>Properties of The BFGS Method<a class="headerlink" href="#properties-of-the-bfgs-method" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -162,7 +162,7 @@
                         title="previous chapter">6 Quasi-Newton Methods</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="chapter6-2.html"
-                        title="next chapter">6.2 The SR2 Method</a></p>
+                        title="next chapter">6.2 The SR1 Method</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -191,7 +191,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="chapter6-2.html" title="6.2 The SR2 Method"
+          <a href="chapter6-2.html" title="6.2 The SR1 Method"
              >next</a> |</li>
         <li class="right" >
           <a href="chapter-6.html" title="6 Quasi-Newton Methods"

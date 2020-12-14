@@ -21,3 +21,5 @@ Contents
    chapter-4
    chapter-5
    chapter-6
+   chapter-7
+   chapter-8

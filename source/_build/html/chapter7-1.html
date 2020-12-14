@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html lang="cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7.1 Inexact Newton Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7.4 Algorithms for Partially Separable Functions" href="chapter7-4.html" />
+    <link rel="prev" title="7 Large-Scale Unconstrained Optimization" href="chapter-7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter7-4.html" title="7.4 Algorithms for Partially Separable Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter-7.html" title="7 Large-Scale Unconstrained Optimization"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-7.html" accesskey="U">7 Large-Scale Unconstrained Optimization</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">7.1 Inexact Newton Methods</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="inexact-newton-methods">
+<h1>7.1 Inexact Newton Methods<a class="headerlink" href="#inexact-newton-methods" title="Permalink to this headline">¶</a></h1>
+<p>Recall that the basic Newton step <span class="math notranslate nohighlight">\(p_k^N\)</span> is obtained by solving the symmetric <span class="math notranslate nohighlight">\(n \times n\)</span> linear system</p>
+<div class="math notranslate nohighlight" id="equation-eq7-1">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq7-1" title="Permalink to this equation">¶</a></span>\[\nabla^2 f_kp_k^N = - \nabla f_k\]</div>
+<p>In this section, we describe techniques for obtaining approximations to <span class="math notranslate nohighlight">\(p_k^N\)</span> that are inexpensive to calculate but are good search directions or steps. These approaches are based on solving <a class="reference internal" href="#equation-eq7-1">(1)</a> by using the conjugate gradient method or the Lanczos method. We refer to this family of methods by the general name <strong>inexact Newton methods</strong>.</p>
+<div class="section" id="local-convergence-of-inexact-newton-methods">
+<h2>Local Convergence of Inexact Newton Methods<a class="headerlink" href="#local-convergence-of-inexact-newton-methods" title="Permalink to this headline">¶</a></h2>
+<p>Most rules for terminating the iterative solver <a class="reference internal" href="#equation-eq7-1">(1)</a> are based on the residual</p>
+<div class="math notranslate nohighlight">
+\[r_k = \nabla^2 f_kp_k + \nabla f_k\]</div>
+<p>where <span class="math notranslate nohighlight">\(p_k\)</span> is the inexact Newton step. Usually we terminate the CG iterations when</p>
+<div class="math notranslate nohighlight">
+\[\lVert r_k \rVert \leq \eta_k \lVert \nabla f_k \rVert\]</div>
+<p>where the sequence <span class="math notranslate nohighlight">\(\{\eta_k\}\)</span> with <span class="math notranslate nohighlight">\(0 &lt; \eta_k &lt; 1\)</span> is called the <strong>forcing sequence</strong>.</p>
+<p><strong>Theorem 7.1.</strong> Suppose that <span class="math notranslate nohighlight">\(\nabla^2 f(x)\)</span> exists and is continuous in a neighborhood of a minimizer <span class="math notranslate nohighlight">\(x^*\)</span>, with <span class="math notranslate nohighlight">\(\nabla^2 f(x^*)\)</span> is positive definite. Consider the iteration <span class="math notranslate nohighlight">\(x_{k+1} = x_k + p_k\)</span> where <span class="math notranslate nohighlight">\(p_k\)</span> satisfies <span class="math notranslate nohighlight">\(\lVert r_k \rVert \leq \eta_k \lVert \nabla f_k \rVert\)</span>, and assume that <span class="math notranslate nohighlight">\(\eta_k \leq \eta\)</span> for some constant <span class="math notranslate nohighlight">\(\eta \in [0, 1)\)</span>. Then if the starting point <span class="math notranslate nohighlight">\(x_0\)</span> is sufficiently near <span class="math notranslate nohighlight">\(x^*\)</span>, the sequence <span class="math notranslate nohighlight">\(\{x_k\}\)</span> converges to <span class="math notranslate nohighlight">\(x^*\)</span> and satisfies</p>
+<div class="math notranslate nohighlight">
+\[\lVert \nabla^2 f(x^*)(x_{k+1}-x^*)\rVert \leq \hat{\eta}\lVert\nabla^2 f(x^*)(x_k - x^*)\rVert\]</div>
+<p>for some constant <span class="math notranslate nohighlight">\(\hat{\eta}\)</span> with <span class="math notranslate nohighlight">\(\eta &lt; \hat{\eta} &lt; 1\)</span>.</p>
+<p><strong>Theorem 7.2.</strong> Suppose that the conditions of Theorem 7.1 hold, and assume that the iterates <span class="math notranslate nohighlight">\(\{x_k\}\)</span> generated by the inexact Newton method converge to <span class="math notranslate nohighlight">\(x^*\)</span>. Then the rate of convergence is superlinear if <span class="math notranslate nohighlight">\(\eta_k \to 0\)</span>. If in addition, <span class="math notranslate nohighlight">\(\nabla^2 f(x)\)</span> is Lipschitz continous for <span class="math notranslate nohighlight">\(x\)</span> near <span class="math notranslate nohighlight">\(x^*\)</span> and if <span class="math notranslate nohighlight">\(\eta_k = O(\lVert \nabla f_k \rVert)\)</span>, then the convergence is quadratic.</p>
+</div>
+<div class="section" id="line-search-newton-cg-method">
+<h2>Line Search Newton-CG Method<a class="headerlink" href="#line-search-newton-cg-method" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7.1 Inexact Newton Methods</a><ul>
+<li><a class="reference internal" href="#local-convergence-of-inexact-newton-methods">Local Convergence of Inexact Newton Methods</a></li>
+<li><a class="reference internal" href="#line-search-newton-cg-method">Line Search Newton-CG Method</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter-7.html"
+                        title="previous chapter">7 Large-Scale Unconstrained Optimization</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter7-4.html"
+                        title="next chapter">7.4 Algorithms for Partially Separable Functions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter7-1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter7-4.html" title="7.4 Algorithms for Partially Separable Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter-7.html" title="7 Large-Scale Unconstrained Optimization"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="chapter-7.html" >7 Large-Scale Unconstrained Optimization</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">7.1 Inexact Newton Methods</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Mofii.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

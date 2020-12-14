@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6 Quasi-Newton Methods &#8212; Notes for Numerical Optimization 0.1 documentation</title>
+    <title>8 Calculating Derivatives &#8212; Notes for Numerical Optimization 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,8 +18,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6.1 The BFGS Method" href="chapter6-1.html" />
-    <link rel="prev" title="5.2 Nonlinear Conjugate Gradient Method" href="chapter5-2.html" /> 
+    <link rel="next" title="8.1 Finite-Difference Derivative Approximations" href="chapter8-1.html" />
+    <link rel="prev" title="7.4 Algorithms for Partially Separable Functions" href="chapter7-4.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,13 +28,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter8-1.html" title="8.1 Finite-Difference Derivative Approximations"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter7-4.html" title="7.4 Algorithms for Partially Separable Functions"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+        <li class="nav-item nav-item-this"><a href="">8 Calculating Derivatives</a></li> 
       </ul>
     </div>  
 
@@ -43,29 +43,24 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quasi-newton-methods">
-<h1>6 Quasi-Newton Methods<a class="headerlink" href="#quasi-newton-methods" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="calculating-derivatives">
+<h1>8 Calculating Derivatives<a class="headerlink" href="#calculating-derivatives" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-1.html">6.1 The BFGS Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#properties-of-the-bfgs-method">Properties of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-1.html#implementation">implementation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-2.html">6.2 The SR1 Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-2.html#properties-of-sr1-updating">Properties of SR1 updating</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-3.html">6.3 The Broyden Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter6-4.html">6.4 Convergence Analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#global-convergence-of-the-bfgs-method">Global Convergence of The BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#superliner-convergence-of-the-bfgs-method">Superliner Convergence of the BFGS Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter6-4.html#convergence-analysis-of-the-sr1-method">Convergence Analysis of the SR1 Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter8-1.html">8.1 Finite-Difference Derivative Approximations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter8-1.html#approximating-the-gradient">Approximating the Gradient</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<p>Quasi-Newton methods require only the gradient of the objective function at each iterate. By measuring the changes in gradient, they construct a model of the objective function that is good enough to produce superlinear convergence.</p>
+<p>Some functions are too complicated and we have to look for ways to calculate or approximate the derivatives automatically.</p>
+<p><strong>Finite Differencing.</strong> The partial derivative of a smooth function <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \mapsto \mathbb{R}\)</span> with respect to the <span class="math notranslate nohighlight">\(i\)</span> can be approximated by the central difference formula</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial f}{\partial x_i} \approx \frac{f(x + \epsilon e_i) - f(x - \epsilon e_i)}{2\epsilon}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\epsilon\)</span> is a small positive scalar and <span class="math notranslate nohighlight">\(e_i\)</span> is the :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>i`th unit vector.</p>
+<p><strong>Automatic Differentiation.</strong> This tehnique takes the view that the computer code for evaluating the function can be broken down into a composition of elementary arithmetic operations, to which the chain rule can be applied.</p>
+<p><strong>Symbolic Differentiation.</strong> In this technique, the algebraic specification for the function <span class="math notranslate nohighlight">\(f\)</span> is manipulated by symbolic manipulation tools to produce new algebriac expressions for each component of the gradient.</p>
+<p>Derivative estimation are not only useful for optimization, but also in other areas, such as sensitivity analysis, nonnlinear differential equations, and optimization.</p>
 </div>
 
 
@@ -76,15 +71,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="chapter5-2.html"
-                        title="previous chapter">5.2 Nonlinear Conjugate Gradient Method</a></p>
+  <p class="topless"><a href="chapter7-4.html"
+                        title="previous chapter">7.4 Algorithms for Partially Separable Functions</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="chapter6-1.html"
-                        title="next chapter">6.1 The BFGS Method</a></p>
+  <p class="topless"><a href="chapter8-1.html"
+                        title="next chapter">8.1 Finite-Difference Derivative Approximations</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/chapter-6.rst.txt"
+      <li><a href="_sources/chapter-8.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -109,13 +104,13 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="chapter6-1.html" title="6.1 The BFGS Method"
+          <a href="chapter8-1.html" title="8.1 Finite-Difference Derivative Approximations"
              >next</a> |</li>
         <li class="right" >
-          <a href="chapter5-2.html" title="5.2 Nonlinear Conjugate Gradient Method"
+          <a href="chapter7-4.html" title="7.4 Algorithms for Partially Separable Functions"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Notes for Numerical Optimization 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">6 Quasi-Newton Methods</a></li> 
+        <li class="nav-item nav-item-this"><a href="">8 Calculating Derivatives</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
